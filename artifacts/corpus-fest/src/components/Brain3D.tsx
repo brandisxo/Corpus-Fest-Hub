@@ -91,6 +91,16 @@ export default function Brain3D() {
       if (W < 10) return;
       initDone = true;
 
+      try {
+        _doInit(W, H);
+      } catch {
+        setWebglFailed(true);
+      }
+    }
+
+    function _doInit(W: number, H: number) {
+      if (!container) return;
+
       // ── Renderer ────────────────────────────────────────────────────────────
       let renderer: THREE.WebGLRenderer;
       try {
@@ -195,14 +205,20 @@ export default function Brain3D() {
       let rafId = 0;
       function animate() {
         rafId = requestAnimationFrame(animate);
-        group.rotation.y = (performance.now() - t0) / 1000 * 0.13;
-        renderer.render(scene, camera);
+        try {
+          group.rotation.y = (performance.now() - t0) / 1000 * 0.13;
+          renderer.render(scene, camera);
+        } catch {
+          cancelAnimationFrame(rafId);
+        }
       }
       animate();
 
       // ── Resize ───────────────────────────────────────────────────────────────
       function onResize() {
+        if (!container) return;
         const W2 = container.clientWidth, H2 = container.clientHeight;
+        if (W2 < 1 || H2 < 1) return;
         camera.aspect = W2 / H2;
         camera.updateProjectionMatrix();
         renderer.setSize(W2, H2);
