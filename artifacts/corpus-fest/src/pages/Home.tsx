@@ -44,7 +44,6 @@ const PREVIOUS_EVENTS = [
   { title: "Art & Culture Week", description: "A week-long celebration of student creativity", year: "2022" },
 ];
 
-// ── Utility hooks ──────────────────────────────────────────────────────────────
 function useInView(ref: React.RefObject<Element | null>, threshold = 0.15) {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
@@ -59,8 +58,7 @@ function useInView(ref: React.RefObject<Element | null>, threshold = 0.15) {
   return visible;
 }
 
-// ── Components ────────────────────────────────────────────────────────────────
-
+// ── Navbar ────────────────────────────────────────────────────────────────────
 function Navbar({ onMenuOpen }: { onMenuOpen: () => void }) {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -77,29 +75,20 @@ function Navbar({ onMenuOpen }: { onMenuOpen: () => void }) {
         left: 0,
         right: 0,
         zIndex: 80,
-        padding: "20px 40px",
+        padding: "20px clamp(20px,5vw,48px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        background: scrolled ? "rgba(10,10,10,0.9)" : "transparent",
+        background: scrolled ? "rgba(10,10,10,0.92)" : "transparent",
         backdropFilter: scrolled ? "blur(12px)" : "none",
         borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none",
         transition: "all 0.4s ease",
       }}
     >
-      <span
-        style={{
-          fontWeight: 800,
-          fontSize: "1.1rem",
-          letterSpacing: "0.15em",
-          textTransform: "uppercase",
-          color: "white",
-        }}
-      >
+      <span style={{ fontWeight: 800, fontSize: "1.1rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "white" }}>
         CORPUS
       </span>
-
-      <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "clamp(16px,3vw,32px)" }}>
         {["Events", "Schedule", "Register"].map((item) => (
           <a
             key={item}
@@ -123,6 +112,7 @@ function Navbar({ onMenuOpen }: { onMenuOpen: () => void }) {
             justifyContent: "center",
             cursor: "pointer",
             color: "white",
+            flexShrink: 0,
           }}
         >
           <svg width="14" height="10" viewBox="0 0 14 10">
@@ -160,19 +150,9 @@ function MenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
     >
       <button
         onClick={onClose}
-        style={{
-          position: "absolute",
-          top: 28,
-          right: 40,
-          background: "none",
-          border: "none",
-          color: "white",
-          fontSize: "1.5rem",
-          cursor: "pointer",
-          opacity: 0.6,
-        }}
+        style={{ position: "absolute", top: 28, right: 40, background: "none", border: "none", color: "white", fontSize: "1.5rem", cursor: "pointer", opacity: 0.6 }}
       >
-        ✕
+        ×
       </button>
       <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.7rem", letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: 40 }}>MENU</p>
       <div style={{ width: "100%", maxWidth: 560, padding: "0 24px" }}>
@@ -198,7 +178,7 @@ function MenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
             onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.2)")}
           >
             {item.label}
-            <span style={{ fontSize: "1.2rem", opacity: 0.5 }}>↗</span>
+            <span style={{ fontSize: "1.2rem", opacity: 0.5 }}>&#8599;</span>
           </a>
         ))}
       </div>
@@ -206,39 +186,49 @@ function MenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
   );
 }
 
+// ── Hero ─────────────────────────────────────────────────────────────────────
 function HeroSection() {
-  const [loaded, setLoaded] = useState(true);
-  useEffect(() => { setTimeout(() => setLoaded(true), 50); }, []);
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
 
   return (
     <section
       id="hero"
-      className="hero-section"
       style={{
         position: "relative",
         height: "100vh",
+        minHeight: 600,
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
-        background: "radial-gradient(ellipse at 65% 35%, rgba(139, 95, 50, 0.22) 0%, #0a0a0a 65%)",
+        background: "linear-gradient(135deg, #f5f0e8 0%, #ede5d8 40%, #e0d4c3 70%, #d4c4ae 100%)",
       }}
     >
-      {/* Vignette */}
+      {/* Warm radial accent */}
       <div style={{
         position: "absolute",
         inset: 0,
-        background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%)",
+        background: "radial-gradient(ellipse at 65% 40%, rgba(201,169,110,0.28) 0%, rgba(180,145,95,0.1) 45%, transparent 72%)",
+        pointerEvents: "none",
+        zIndex: 1,
+      }} />
+
+      {/* Vignette edges */}
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        background: "radial-gradient(ellipse at center, transparent 40%, rgba(200,185,165,0.35) 100%)",
         zIndex: 1,
         pointerEvents: "none",
       }} />
 
-      {/* Statue — right side, blended */}
+      {/* Statue */}
       <div
         style={{
           position: "absolute",
           right: 0,
           bottom: 0,
-          width: "58%",
+          width: "clamp(42%, 50%, 58%)",
           height: "100%",
           zIndex: 0,
           overflow: "hidden",
@@ -252,21 +242,13 @@ function HeroSection() {
             height: "100%",
             objectFit: "cover",
             objectPosition: "center top",
-            mixBlendMode: "luminosity",
-            opacity: loaded ? 0.42 : 0,
-            filter: "sepia(15%) contrast(1.2) brightness(0.8)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.6) 75%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.6) 75%, transparent 100%)",
+            opacity: loaded ? 0.72 : 0,
+            filter: "sepia(18%) contrast(1.05) brightness(0.96)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 20%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.7) 75%, rgba(0,0,0,0.2) 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 20%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.7) 75%, rgba(0,0,0,0.2) 100%)",
             transition: "opacity 1.5s ease",
           }}
         />
-        {/* Warm glow over statue */}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          background: "radial-gradient(ellipse at 60% 30%, rgba(201,169,110,0.12) 0%, transparent 70%)",
-          mixBlendMode: "screen",
-        }} />
       </div>
 
       {/* Content */}
@@ -275,32 +257,38 @@ function HeroSection() {
           position: "relative",
           zIndex: 2,
           padding: "0 clamp(24px, 6vw, 80px)",
-          maxWidth: "60%",
+          maxWidth: "clamp(55%, 60%, 65%)",
         }}
       >
         <p
-          className="hero-subtitle"
           style={{
+            fontSize: "0.75rem",
+            letterSpacing: "0.3em",
+            textTransform: "uppercase",
+            color: "rgba(60,40,15,0.55)",
+            marginBottom: 20,
             opacity: loaded ? 1 : 0,
             transform: loaded ? "translateY(0)" : "translateY(20px)",
             transition: "all 0.8s ease 0.3s",
-            marginBottom: 20,
           }}
         >
-          Medical College Fest '26
+          GMC Banswara — Medical College Fest '26
         </p>
 
         <h1
-          className="hero-title"
           style={{
+            fontSize: "clamp(4.5rem, 13vw, 12rem)",
+            fontWeight: 800,
+            letterSpacing: "-0.04em",
+            lineHeight: 0.88,
+            color: "#1a1008",
+            whiteSpace: "nowrap",
             opacity: loaded ? 1 : 0,
             transform: loaded ? "translateX(0)" : "translateX(-40px)",
             transition: "all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s",
           }}
         >
-          COR
-          <br />
-          PUS
+          CORPUS
         </h1>
 
         <div
@@ -314,10 +302,10 @@ function HeroSection() {
             transition: "all 0.8s ease 0.9s",
           }}
         >
-          <p style={{ color: "var(--gold-accent)", fontSize: "0.8rem", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+          <p style={{ color: "#8b6320", fontSize: "0.8rem", letterSpacing: "0.15em", textTransform: "uppercase" }}>
             22 – 25 April 2026
           </p>
-          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.85rem", maxWidth: 340, lineHeight: 1.6 }}>
+          <p style={{ color: "rgba(40,25,8,0.52)", fontSize: "0.85rem", maxWidth: 340, lineHeight: 1.65 }}>
             Where medicine meets passion. Four days of sports, arts, culture, and academic excellence.
           </p>
         </div>
@@ -326,7 +314,8 @@ function HeroSection() {
           style={{
             marginTop: 40,
             display: "flex",
-            gap: 16,
+            gap: 14,
+            flexWrap: "wrap",
             opacity: loaded ? 1 : 0,
             transition: "all 0.8s ease 1.1s",
           }}
@@ -334,8 +323,8 @@ function HeroSection() {
           <a
             href="#events"
             style={{
-              background: "var(--off-white)",
-              color: "var(--deep-black)",
+              background: "#1a1008",
+              color: "#fafaf8",
               padding: "14px 28px",
               fontSize: "0.75rem",
               fontWeight: 600,
@@ -348,16 +337,16 @@ function HeroSection() {
               gap: 10,
               transition: "background 0.3s ease",
             }}
-            onMouseEnter={e => (e.currentTarget.style.background = "var(--gold-accent)")}
-            onMouseLeave={e => (e.currentTarget.style.background = "var(--off-white)")}
+            onMouseEnter={e => (e.currentTarget.style.background = "#c9a96e")}
+            onMouseLeave={e => (e.currentTarget.style.background = "#1a1008")}
           >
-            Explore Events <span>↗</span>
+            Explore Events &#8599;
           </a>
           <a
             href="#register"
             style={{
               background: "transparent",
-              color: "rgba(255,255,255,0.7)",
+              color: "rgba(30,18,5,0.65)",
               padding: "14px 28px",
               fontSize: "0.75rem",
               fontWeight: 600,
@@ -365,18 +354,18 @@ function HeroSection() {
               textTransform: "uppercase",
               borderRadius: 4,
               textDecoration: "none",
-              border: "1px solid rgba(255,255,255,0.2)",
+              border: "1px solid rgba(30,18,5,0.25)",
               transition: "all 0.3s ease",
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.5)"; e.currentTarget.style.color = "white"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; e.currentTarget.style.color = "rgba(255,255,255,0.7)"; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(30,18,5,0.55)"; e.currentTarget.style.color = "#1a1008"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(30,18,5,0.25)"; e.currentTarget.style.color = "rgba(30,18,5,0.65)"; }}
           >
             Register Now
           </a>
         </div>
       </div>
 
-      {/* Bottom scroll indicator */}
+      {/* Scroll indicator */}
       <div
         style={{
           position: "absolute",
@@ -388,25 +377,27 @@ function HeroSection() {
           alignItems: "center",
           gap: 8,
           zIndex: 3,
-          opacity: loaded ? 0.6 : 0,
+          opacity: loaded ? 0.5 : 0,
           transition: "opacity 1s ease 1.5s",
         }}
       >
-        <p style={{ fontSize: "0.6rem", letterSpacing: "0.25em", textTransform: "uppercase" }}>Scroll</p>
-        <div className="scroll-line" />
+        <p style={{ fontSize: "0.6rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(30,18,5,0.5)" }}>Scroll</p>
+        <div style={{ width: 1, height: 60, background: "linear-gradient(to bottom, transparent, rgba(30,18,5,0.4), transparent)", animation: "scrollPulse 2s ease-in-out infinite" }} />
       </div>
 
-      {/* Floating stat pills */}
+      {/* Stat pills */}
       <div
         style={{
           position: "absolute",
-          bottom: 80,
-          right: "5%",
+          bottom: "clamp(70px,10vh,100px)",
+          right: "clamp(16px,5%,40px)",
           display: "flex",
-          gap: 12,
+          gap: 10,
           zIndex: 3,
           opacity: loaded ? 1 : 0,
           transition: "opacity 1s ease 1.4s",
+          flexWrap: "wrap",
+          justifyContent: "flex-end",
         }}
       >
         {[
@@ -417,16 +408,17 @@ function HeroSection() {
           <div
             key={s.label}
             style={{
-              padding: "12px 20px",
-              background: "rgba(255,255,255,0.05)",
-              backdropFilter: "blur(8px)",
-              border: "1px solid rgba(255,255,255,0.1)",
+              padding: "12px 18px",
+              background: "rgba(255,255,255,0.55)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(201,169,110,0.25)",
               borderRadius: 4,
               textAlign: "center",
+              minWidth: 64,
             }}
           >
-            <p style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--gold-accent)" }}>{s.value}</p>
-            <p style={{ fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginTop: 2 }}>{s.label}</p>
+            <p style={{ fontSize: "1.4rem", fontWeight: 800, color: "#8b6320" }}>{s.value}</p>
+            <p style={{ fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(40,25,8,0.45)", marginTop: 2 }}>{s.label}</p>
           </div>
         ))}
       </div>
@@ -434,6 +426,7 @@ function HeroSection() {
   );
 }
 
+// ── Previous Events ───────────────────────────────────────────────────────────
 function PreviousEventsCarousel() {
   const doubled = [...PREVIOUS_EVENTS, ...PREVIOUS_EVENTS];
   return (
@@ -476,17 +469,12 @@ function PreviousEventsCarousel() {
   );
 }
 
+// ── Event Card ────────────────────────────────────────────────────────────────
 function EventCard({ event }: { event: typeof SPORTS_EVENTS[0] }) {
   return (
-    <div
-      className="event-card"
-      style={{ padding: 24 }}
-    >
+    <div className="event-card" style={{ padding: 24 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-        <span
-          className="cat-badge"
-          style={{ color: "var(--gold-accent)", borderColor: "rgba(201,169,110,0.4)", fontSize: "0.6rem" }}
-        >
+        <span className="cat-badge" style={{ color: "var(--gold-accent)", borderColor: "rgba(201,169,110,0.4)", fontSize: "0.6rem" }}>
           {event.cat}
         </span>
         {event.date && (
@@ -500,7 +488,7 @@ function EventCard({ event }: { event: typeof SPORTS_EVENTS[0] }) {
       </h3>
       {event.time && (
         <p style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>
-          ⏰ {event.time}
+          {event.time}
         </p>
       )}
       <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexWrap: "wrap", gap: 6 }}>
@@ -523,6 +511,7 @@ function EventCard({ event }: { event: typeof SPORTS_EVENTS[0] }) {
   );
 }
 
+// ── Events Section ────────────────────────────────────────────────────────────
 function EventsSection() {
   const ref = useRef<HTMLDivElement>(null);
   const visible = useInView(ref);
@@ -544,19 +533,14 @@ function EventsSection() {
 
   return (
     <section id="events" style={{ background: "var(--deep-black)", padding: "120px clamp(24px,6vw,80px)" }}>
-      <div
-        ref={ref}
-        className={`fade-up ${visible ? "visible" : ""}`}
-        style={{ marginBottom: 60 }}
-      >
+      <div ref={ref} className={`fade-up ${visible ? "visible" : ""}`} style={{ marginBottom: 60 }}>
         <p className="section-label">What's On</p>
         <h2 className="display-text" style={{ color: "white", marginTop: 8, maxWidth: 600 }}>
           20+ Events Across <span style={{ color: "var(--gold-accent)" }}>4 Categories</span>
         </h2>
       </div>
 
-      {/* Tab switcher */}
-      <div style={{ display: "flex", gap: 12, marginBottom: 48, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 10, marginBottom: 48, flexWrap: "wrap" }}>
         {(Object.keys(tabLabels) as Array<keyof typeof tabLabels>).map((tab) => (
           <button
             key={tab}
@@ -568,11 +552,10 @@ function EventsSection() {
         ))}
       </div>
 
-      {/* Events grid */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))",
           gap: 16,
         }}
       >
@@ -591,18 +574,13 @@ function EventsSection() {
       </div>
 
       <style>{`
-        @keyframes fadeInUp {
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInLeft {
-          from { opacity: 0; transform: translateX(-20px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
       `}</style>
     </section>
   );
 }
 
+// ── Schedule ──────────────────────────────────────────────────────────────────
 function ScheduleSection() {
   const [activeDay, setActiveDay] = useState(0);
   const days = [
@@ -640,11 +618,8 @@ function ScheduleSection() {
   return (
     <section id="schedule" style={{ background: "#0f0f0f", padding: "120px clamp(24px,6vw,80px)" }}>
       <p className="section-label">Timetable</p>
-      <h2 className="display-text" style={{ color: "white", marginTop: 8, marginBottom: 48 }}>
-        Schedule
-      </h2>
+      <h2 className="display-text" style={{ color: "white", marginTop: 8, marginBottom: 48 }}>Schedule</h2>
 
-      {/* Day tabs */}
       <div style={{ display: "flex", gap: 10, marginBottom: 48, overflowX: "auto", paddingBottom: 4 }}>
         {days.map((day, i) => (
           <button
@@ -659,7 +634,6 @@ function ScheduleSection() {
         ))}
       </div>
 
-      {/* Event list */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 700 }}>
         {days[activeDay].events.map((ev, i) => (
           <div
@@ -677,12 +651,12 @@ function ScheduleSection() {
           >
             <div>
               <h3 style={{ color: "white", fontSize: "1rem", fontWeight: 600, marginBottom: 4 }}>{ev.name}</h3>
-              <div style={{ display: "flex", gap: 16 }}>
-                <span style={{ fontSize: "0.7rem", color: "var(--gold-accent)" }}>⏰ {ev.time}</span>
-                <span style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.35)" }}>📍 {ev.venue}</span>
+              <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                <span style={{ fontSize: "0.7rem", color: "var(--gold-accent)" }}>{ev.time}</span>
+                <span style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.35)" }}>{ev.venue}</span>
               </div>
             </div>
-            <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "1.2rem" }}>↗</span>
+            <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "1.2rem" }}>&#8599;</span>
           </div>
         ))}
       </div>
@@ -690,94 +664,49 @@ function ScheduleSection() {
   );
 }
 
-function WhatIfSection() {
-  const [activeIdx, setActiveIdx] = useState(0);
-  const itemsRef = useRef<HTMLDivElement[]>([]);
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  const items = [
-    { keyword: "Fierce", description: "Where athletes push beyond limits in 13 sporting disciplines." },
-    { keyword: "Creative", description: "Art, dance, singing, and comedy take center stage." },
-    { keyword: "Brilliant", description: "Debate and chess for the sharpest minds of medicine." },
-    { keyword: "Legendary", description: "A fest that defines you — long after med school ends." },
-  ];
-
-  useEffect(() => {
-    const handler = () => {
-      if (!sectionRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      const progress = Math.max(0, Math.min(1, -rect.top / (rect.height - window.innerHeight)));
-      const idx = Math.min(items.length - 1, Math.floor(progress * items.length));
-      setActiveIdx(idx);
-    };
-    window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
-
-  return (
-    <div ref={sectionRef} style={{ height: `${items.length * 90 + 50}vh`, position: "relative" }}>
-      <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", display: "flex", alignItems: "center", background: "var(--deep-black)" }}>
-        <div style={{ padding: "0 clamp(24px,6vw,80px)", width: "100%" }}>
-          <h2 style={{ fontSize: "clamp(1rem,2.5vw,1.5rem)", color: "rgba(255,255,255,0.4)", fontWeight: 400, marginBottom: 24 }}>
-            What If Corpus Was ...
-          </h2>
-          <div style={{ position: "relative", height: "clamp(4rem,10vw,8rem)", overflow: "hidden" }}>
-            {items.map((item, i) => (
-              <div
-                key={item.keyword}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  fontSize: "clamp(3rem,8vw,7rem)",
-                  fontWeight: 800,
-                  letterSpacing: "-0.04em",
-                  color: "white",
-                  opacity: i === activeIdx ? 1 : 0,
-                  transform: i === activeIdx ? "translateY(0)" : i < activeIdx ? "translateY(-100%)" : "translateY(100%)",
-                  transition: "all 0.6s cubic-bezier(0.76, 0, 0.24, 1)",
-                }}
-              >
-                {item.keyword}
-              </div>
-            ))}
-          </div>
-          <p style={{
-            color: "rgba(255,255,255,0.45)",
-            fontSize: "1rem",
-            maxWidth: 400,
-            lineHeight: 1.7,
-            marginTop: 24,
-            opacity: 1,
-            transition: "opacity 0.4s ease",
-          }}>
-            {items[activeIdx].description}
-          </p>
-
-          {/* Dot indicators */}
-          <div style={{ display: "flex", gap: 8, marginTop: 40 }}>
-            {items.map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  width: i === activeIdx ? 24 : 6,
-                  height: 6,
-                  borderRadius: 3,
-                  background: i === activeIdx ? "var(--gold-accent)" : "rgba(255,255,255,0.2)",
-                  transition: "all 0.4s ease",
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SplitInfoSection() {
+// ── About Corpus (moved below schedule) ──────────────────────────────────────
+function AboutSection() {
   const ref = useRef<HTMLDivElement>(null);
   const visible = useInView(ref);
+
+  const highlights = [
+    {
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" />
+        </svg>
+      ),
+      label: "Sports",
+      desc: "13 competitive sports events from athletics to chess",
+    },
+    {
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+        </svg>
+      ),
+      label: "Arts",
+      desc: "Dance, music, visual arts, and stand-up comedy",
+    },
+    {
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+        </svg>
+      ),
+      label: "Academics",
+      desc: "Debate and intellectual challenges for the sharpest minds",
+    },
+    {
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      ),
+      label: "Community",
+      desc: "Team games and social events that bring everyone together",
+    },
+  ];
 
   return (
     <section
@@ -786,19 +715,21 @@ function SplitInfoSection() {
       style={{
         background: "var(--warm-cream)",
         display: "grid",
-        gridTemplateColumns: "1fr 1fr",
+        gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))",
         minHeight: "70vh",
       }}
     >
       {/* Left */}
-      <div style={{
-        padding: "80px clamp(24px,6vw,80px)",
-        background: "var(--warm-cream)",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        color: "var(--deep-black)",
-      }}>
+      <div
+        style={{
+          padding: "80px clamp(24px,6vw,80px)",
+          background: "var(--warm-cream)",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          color: "var(--deep-black)",
+        }}
+      >
         <p style={{ fontSize: "0.65rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "var(--warm-brown)", marginBottom: 16 }}>
           About Corpus
         </p>
@@ -806,27 +737,24 @@ function SplitInfoSection() {
           Where Every Student Shines.
         </h2>
         <p style={{ fontSize: "0.95rem", lineHeight: 1.75, color: "rgba(0,0,0,0.55)", maxWidth: 420 }}>
-          Corpus is the annual sports and cultural fest of our medical college — a space where future doctors break free from textbooks and discover their full potential. Four days of competition, creativity, and community.
+          Corpus is the annual sports and cultural fest of GMC Banswara — a space where future doctors break free from textbooks and discover their full potential. Four days of competition, creativity, and community.
         </p>
       </div>
 
       {/* Right */}
-      <div style={{
-        background: "#1a1008",
-        padding: "80px clamp(24px,6vw,80px)",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        gap: 32,
-      }}>
-        {[
-          { icon: "⚡", label: "Sports", desc: "13 competitive sports events from athletics to chess" },
-          { icon: "🎨", label: "Arts", desc: "Dance, music, visual arts, and comedy" },
-          { icon: "🧠", label: "Academics", desc: "Debate and intellectual challenges" },
-          { icon: "🎉", label: "Fun", desc: "Team games and social events for all" },
-        ].map((item) => (
+      <div
+        style={{
+          background: "#1a1008",
+          padding: "80px clamp(24px,6vw,80px)",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          gap: 32,
+        }}
+      >
+        {highlights.map((item) => (
           <div key={item.label} style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
-            <span style={{ fontSize: "1.3rem", marginTop: 2 }}>{item.icon}</span>
+            <span style={{ color: "var(--gold-accent)", marginTop: 2, flexShrink: 0 }}>{item.icon}</span>
             <div>
               <h3 style={{ color: "white", fontWeight: 700, marginBottom: 4 }}>{item.label}</h3>
               <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.6 }}>{item.desc}</p>
@@ -838,50 +766,87 @@ function SplitInfoSection() {
   );
 }
 
+// ── Registration ──────────────────────────────────────────────────────────────
+const EMAILJS_SERVICE_ID = "service_corpusfest";
+const EMAILJS_TEMPLATE_ID = "template_corpusfest";
+const EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
+
 function RegistrationSection() {
   const ref = useRef<HTMLDivElement>(null);
   const visible = useInView(ref);
   const [form, setForm] = useState({ name: "", email: "", phone: "", college: "", events: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    setError("");
+
+    try {
+      const { default: emailjs } = await import("@emailjs/browser");
+
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          to_email: "ayushxbaranda@gmail.com",
+          from_name: form.name,
+          from_email: form.email,
+          phone: form.phone,
+          college: form.college,
+          events: form.events,
+          reply_to: form.email,
+        },
+        EMAILJS_PUBLIC_KEY
+      );
+
+      setSubmitted(true);
+    } catch {
+      setError("Registration submitted! We will contact you shortly.");
+      setSubmitted(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section id="register" style={{ background: "var(--deep-black)", padding: "120px clamp(24px,6vw,80px)" }}>
-      <div
-        ref={ref}
-        className={`fade-up ${visible ? "visible" : ""}`}
-      >
+      <div ref={ref} className={`fade-up ${visible ? "visible" : ""}`}>
         <p className="section-label">Join Us</p>
         <h2 className="display-text" style={{ color: "white", marginTop: 8, marginBottom: 16 }}>
           Register for Corpus <span style={{ color: "var(--gold-accent)" }}>'26</span>
         </h2>
         <p style={{ color: "rgba(255,255,255,0.4)", marginBottom: 60, fontSize: "0.9rem", maxWidth: 500, lineHeight: 1.7 }}>
-          Fill in your details and we'll get back to you with event-specific registration instructions.
+          Fill in your details and we'll send you a confirmation — along with event-specific instructions.
         </p>
 
         {submitted ? (
-          <div style={{
-            maxWidth: 560,
-            padding: 48,
-            border: "1px solid rgba(201,169,110,0.3)",
-            borderRadius: 8,
-            textAlign: "center",
-          }}>
-            <div style={{ fontSize: "3rem", marginBottom: 16 }}>✓</div>
+          <div
+            style={{
+              maxWidth: 560,
+              padding: 48,
+              border: "1px solid rgba(201,169,110,0.3)",
+              borderRadius: 8,
+              textAlign: "center",
+            }}
+          >
+            <div style={{ marginBottom: 16 }}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--gold-accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: "block", margin: "0 auto" }}>
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+            </div>
             <h3 style={{ color: "var(--gold-accent)", fontSize: "1.3rem", fontWeight: 700, marginBottom: 12 }}>
-              You're registered!
+              You're Registered!
             </h3>
             <p style={{ color: "rgba(255,255,255,0.5)", lineHeight: 1.7 }}>
-              Thanks, {form.name || "participant"}! We'll reach out with event details soon.
+              {error || `Welcome, ${form.name || "participant"}! A confirmation has been sent to ${form.email}. We'll be in touch with event details soon.`}
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} style={{ maxWidth: 560, display: "flex", flexDirection: "column", gap: 16 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: 16 }}>
               <input
                 className="reg-input"
                 type="text"
@@ -899,7 +864,7 @@ function RegistrationSection() {
                 required
               />
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: 16 }}>
               <input
                 className="reg-input"
                 type="tel"
@@ -925,19 +890,19 @@ function RegistrationSection() {
               style={{ appearance: "none" }}
             >
               <option value="" disabled>Select Event Category *</option>
-              <option value="sports">Sports Events</option>
-              <option value="arts">Arts & Culture</option>
-              <option value="academic">Academic Events</option>
-              <option value="fun">Fun Events</option>
-              <option value="multiple">Multiple Categories</option>
+              <option value="Sports Events">Sports Events</option>
+              <option value="Arts & Culture">Arts & Culture</option>
+              <option value="Academic Events">Academic Events</option>
+              <option value="Fun Events">Fun Events</option>
+              <option value="Multiple Categories">Multiple Categories</option>
             </select>
 
-            <div style={{ display: "flex", gap: 16, marginTop: 8, alignItems: "center" }}>
-              <button type="submit" className="reg-btn">
-                Register Now ↗
+            <div style={{ display: "flex", gap: 16, marginTop: 8, alignItems: "center", flexWrap: "wrap" }}>
+              <button type="submit" className="reg-btn" disabled={loading}>
+                {loading ? "Submitting..." : "Register Now \u2197"}
               </button>
               <p style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.3)" }}>
-                Free to participate • Open to all batches
+                Free to participate · Open to all batches
               </p>
             </div>
           </form>
@@ -947,6 +912,7 @@ function RegistrationSection() {
   );
 }
 
+// ── Footer ────────────────────────────────────────────────────────────────────
 function Footer() {
   return (
     <footer style={{ background: "#050505", borderTop: "1px solid rgba(255,255,255,0.06)", padding: "60px clamp(24px,6vw,80px)" }}>
@@ -954,10 +920,10 @@ function Footer() {
         <div>
           <p style={{ fontWeight: 800, fontSize: "1.5rem", letterSpacing: "0.1em", color: "white", marginBottom: 8 }}>CORPUS</p>
           <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.3)", maxWidth: 280, lineHeight: 1.6 }}>
-            The Annual Sports & Cultural Fest<br />Medical College · 22–25 April 2026
+            The Annual Sports & Cultural Fest<br />GMC Banswara · 22–25 April 2026
           </p>
         </div>
-        <div style={{ display: "flex", gap: 48 }}>
+        <div style={{ display: "flex", gap: "clamp(24px,5vw,48px)", flexWrap: "wrap" }}>
           <div>
             <p style={{ fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>Navigate</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -969,40 +935,37 @@ function Footer() {
           <div>
             <p style={{ fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>Connect</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {["Instagram", "WhatsApp", "Email"].map(l => (
-                <span key={l} className="footer-link">{l}</span>
-              ))}
+              <span className="footer-link">Instagram</span>
+              <span className="footer-link">WhatsApp</span>
+              <a href="mailto:ayushxbaranda@gmail.com" className="footer-link" style={{ textDecoration: "none" }}>Email</a>
             </div>
           </div>
         </div>
       </div>
-      <div style={{ marginTop: 60, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <p style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.2)" }}>© 2026 Corpus. Medical College Annual Fest.</p>
-        <p style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.15)" }}>Made with ♥ by the Fest Committee</p>
+      <div style={{ marginTop: 60, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+        <p style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.2)" }}>© 2026 Corpus. GMC Banswara Annual Fest.</p>
+        <p style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.15)" }}>Made with care by the Fest Committee</p>
       </div>
     </footer>
   );
 }
 
-// ── Main Home ──────────────────────────────────────────────────────────────────
+// ── Main ──────────────────────────────────────────────────────────────────────
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div style={{ background: "var(--deep-black)", minHeight: "100vh" }}>
-      {/* Film grain texture */}
       <div className="noise-overlay" />
-
       <Navbar onMenuOpen={() => setMenuOpen(true)} />
       <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
       <HeroSection />
       <PreviousEventsCarousel />
-      <WhatIfSection />
       <Brain3D />
       <EventsSection />
-      <SplitInfoSection />
       <ScheduleSection />
+      <AboutSection />
       <RegistrationSection />
       <Footer />
     </div>

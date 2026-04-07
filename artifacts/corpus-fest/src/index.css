@@ -119,19 +119,20 @@
 .hero-section {
   position: relative;
   height: 100vh;
+  min-height: 600px;
   display: flex;
   align-items: center;
   overflow: hidden;
-  background: radial-gradient(ellipse at 60% 40%, rgba(139, 95, 50, 0.25) 0%, rgba(10,10,10,1) 70%);
+  background: linear-gradient(135deg, #f5f0e8 0%, #ede5d8 40%, #e0d4c3 70%, #d4c4ae 100%);
 }
 
 .hero-title {
-  font-size: clamp(4rem, 12vw, 11rem);
+  font-size: clamp(4.5rem, 13vw, 12rem);
   font-weight: 800;
   letter-spacing: -0.04em;
-  line-height: 0.9;
-  color: var(--off-white);
-  mix-blend-mode: normal;
+  line-height: 0.88;
+  color: #1a1008;
+  white-space: nowrap;
 }
 
 .hero-subtitle {
@@ -455,4 +456,60 @@
   height: 2px;
   background: var(--gold-accent);
   transition: width 0.4s ease;
+}
+
+/* ── Mobile responsive fixes ─────────────────────────────── */
+@media (max-width: 640px) {
+  .hero-title {
+    white-space: normal;
+    font-size: clamp(5rem, 22vw, 8rem);
+  }
+
+  /* Stats pills — stack into a row that wraps */
+  .hero-stats {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    bottom: 80px !important;
+    right: 16px !important;
+    left: 16px !important;
+    justify-content: flex-start;
+    gap: 8px !important;
+  }
+
+  /* Brain section info panel stacks below brain on small screens */
+  #brain-section .brain-left-panel {
+    position: static !important;
+    transform: none !important;
+    text-align: center;
+    padding: 24px 20px;
+    max-width: 100% !important;
+  }
+
+  /* About section single column */
+  .about-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Schedule items wrap */
+  .schedule-event-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Reduce section padding on mobile */
+  section {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: clamp(4rem, 20vw, 6.5rem);
+    white-space: normal;
+  }
+
+  .display-text {
+    font-size: clamp(2rem, 9vw, 3.5rem) !important;
+  }
 }
