@@ -200,25 +200,16 @@ function HeroSection() {
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
-        background: "linear-gradient(135deg, #d4c4a8 0%, #c8b898 35%, #bda888 65%, #b09878 100%)",
+        background: "#0a0a0a",
       }}
     >
-      {/* Warm radial accent */}
+      {/* Warm gold ambient glow */}
       <div style={{
         position: "absolute",
         inset: 0,
-        background: "radial-gradient(ellipse at 65% 40%, rgba(201,169,110,0.28) 0%, rgba(180,145,95,0.1) 45%, transparent 72%)",
+        background: "radial-gradient(ellipse at 60% 40%, rgba(201,169,110,0.12) 0%, transparent 60%)",
         pointerEvents: "none",
         zIndex: 1,
-      }} />
-
-      {/* Vignette edges */}
-      <div style={{
-        position: "absolute",
-        inset: 0,
-        background: "radial-gradient(ellipse at center, transparent 40%, rgba(200,185,165,0.35) 100%)",
-        zIndex: 1,
-        pointerEvents: "none",
       }} />
 
       {/* Statue */}
@@ -241,10 +232,10 @@ function HeroSection() {
             height: "100%",
             objectFit: "cover",
             objectPosition: "center top",
-            opacity: loaded ? 0.72 : 0,
-            filter: "sepia(18%) contrast(1.05) brightness(0.96)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 20%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.7) 75%, rgba(0,0,0,0.2) 100%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 20%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.7) 75%, rgba(0,0,0,0.2) 100%)",
+            opacity: loaded ? 0.55 : 0,
+            filter: "sepia(30%) contrast(1.1) brightness(0.7) saturate(0.8)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 15%, rgba(0,0,0,0.75) 45%, rgba(0,0,0,0.65) 75%, rgba(0,0,0,0.1) 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 15%, rgba(0,0,0,0.75) 45%, rgba(0,0,0,0.65) 75%, rgba(0,0,0,0.1) 100%)",
             transition: "opacity 1.5s ease",
           }}
         />
@@ -264,7 +255,7 @@ function HeroSection() {
             fontSize: "0.75rem",
             letterSpacing: "0.3em",
             textTransform: "uppercase",
-            color: "rgba(60,40,15,0.55)",
+            color: "rgba(255,255,255,0.35)",
             marginBottom: 20,
             opacity: loaded ? 1 : 0,
             transform: loaded ? "translateY(0)" : "translateY(20px)",
@@ -280,7 +271,7 @@ function HeroSection() {
             fontWeight: 800,
             letterSpacing: "-0.04em",
             lineHeight: 0.88,
-            color: "#1a1008",
+            color: "#fafaf8",
             whiteSpace: "nowrap",
             opacity: loaded ? 1 : 0,
             transform: loaded ? "translateX(0)" : "translateX(-40px)",
@@ -301,10 +292,10 @@ function HeroSection() {
             transition: "all 0.8s ease 0.9s",
           }}
         >
-          <p style={{ color: "#8b6320", fontSize: "0.8rem", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+          <p style={{ color: "#c9a96e", fontSize: "0.8rem", letterSpacing: "0.15em", textTransform: "uppercase" }}>
             22 – 25 April 2026
           </p>
-          <p style={{ color: "rgba(40,25,8,0.52)", fontSize: "0.85rem", maxWidth: 340, lineHeight: 1.65 }}>
+          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.85rem", maxWidth: 340, lineHeight: 1.65 }}>
             Where medicine meets passion. Four days of sports, arts, culture, and academic excellence.
           </p>
         </div>
@@ -322,8 +313,8 @@ function HeroSection() {
           <a
             href="#events"
             style={{
-              background: "#1a1008",
-              color: "#fafaf8",
+              background: "#fafaf8",
+              color: "#0a0a0a",
               padding: "14px 28px",
               fontSize: "0.75rem",
               fontWeight: 600,
@@ -331,13 +322,10 @@ function HeroSection() {
               textTransform: "uppercase",
               borderRadius: 4,
               textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
               transition: "background 0.3s ease",
             }}
             onMouseEnter={e => (e.currentTarget.style.background = "#c9a96e")}
-            onMouseLeave={e => (e.currentTarget.style.background = "#1a1008")}
+            onMouseLeave={e => (e.currentTarget.style.background = "#fafaf8")}
           >
             Explore Events
           </a>
@@ -345,7 +333,7 @@ function HeroSection() {
             href="#register"
             style={{
               background: "transparent",
-              color: "rgba(30,18,5,0.65)",
+              color: "rgba(255,255,255,0.65)",
               padding: "14px 28px",
               fontSize: "0.75rem",
               fontWeight: 600,
@@ -353,11 +341,11 @@ function HeroSection() {
               textTransform: "uppercase",
               borderRadius: 4,
               textDecoration: "none",
-              border: "1px solid rgba(30,18,5,0.25)",
+              border: "1px solid rgba(255,255,255,0.25)",
               transition: "all 0.3s ease",
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(30,18,5,0.55)"; e.currentTarget.style.color = "#1a1008"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(30,18,5,0.25)"; e.currentTarget.style.color = "rgba(30,18,5,0.65)"; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.6)"; e.currentTarget.style.color = "white"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; e.currentTarget.style.color = "rgba(255,255,255,0.65)"; }}
           >
             Register Now
           </a>
@@ -376,12 +364,12 @@ function HeroSection() {
           alignItems: "center",
           gap: 8,
           zIndex: 3,
-          opacity: loaded ? 0.5 : 0,
+          opacity: loaded ? 0.4 : 0,
           transition: "opacity 1s ease 1.5s",
         }}
       >
-        <p style={{ fontSize: "0.6rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(30,18,5,0.5)" }}>Scroll</p>
-        <div style={{ width: 1, height: 60, background: "linear-gradient(to bottom, transparent, rgba(30,18,5,0.4), transparent)", animation: "scrollPulse 2s ease-in-out infinite" }} />
+        <p style={{ fontSize: "0.6rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)" }}>Scroll</p>
+        <div style={{ width: 1, height: 60, background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.4), transparent)", animation: "scrollPulse 2s ease-in-out infinite" }} />
       </div>
 
       {/* Stat pills */}
@@ -408,16 +396,16 @@ function HeroSection() {
             key={s.label}
             style={{
               padding: "12px 18px",
-              background: "rgba(255,255,255,0.55)",
+              background: "rgba(255,255,255,0.06)",
               backdropFilter: "blur(10px)",
-              border: "1px solid rgba(201,169,110,0.25)",
+              border: "1px solid rgba(201,169,110,0.2)",
               borderRadius: 4,
               textAlign: "center",
               minWidth: 64,
             }}
           >
-            <p style={{ fontSize: "1.4rem", fontWeight: 800, color: "#8b6320" }}>{s.value}</p>
-            <p style={{ fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(40,25,8,0.45)", marginTop: 2 }}>{s.label}</p>
+            <p style={{ fontSize: "1.4rem", fontWeight: 800, color: "#c9a96e" }}>{s.value}</p>
+            <p style={{ fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginTop: 2 }}>{s.label}</p>
           </div>
         ))}
       </div>
@@ -471,7 +459,7 @@ function PreviousEventsCarousel() {
 // ── Event Card ────────────────────────────────────────────────────────────────
 function EventCard({ event }: { event: typeof SPORTS_EVENTS[0] }) {
   return (
-    <div className="event-card" style={{ padding: 24, height: "100%", display: "flex", flexDirection: "column" }}>
+    <div className="event-card" style={{ padding: 24, flex: 1, display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
         <span className="cat-badge" style={{ color: "var(--gold-accent)", borderColor: "rgba(201,169,110,0.4)", fontSize: "0.6rem" }}>
           {event.cat}
@@ -556,6 +544,7 @@ function EventsSection() {
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))",
           gap: 16,
+          alignItems: "stretch",
         }}
       >
         {tabData[activeTab].map((event, i) => (
@@ -565,7 +554,8 @@ function EventsSection() {
               opacity: 0,
               transform: "translateY(20px)",
               animation: `fadeInUp 0.5s ease ${i * 0.06}s forwards`,
-              height: "100%",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
             <EventCard event={event} />

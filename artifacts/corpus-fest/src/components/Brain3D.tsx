@@ -1,34 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 
-// 4 regions: each maps to events shown as the user scrolls
 const REGIONS = [
   {
-    events: ["Chess", "Debate", "Art", "Academic"],
+    events: ["Chess", "Debate", "Art", "Academic Quiz"],
     color: "#c9a96e",
-    label: "Academic",
-    // Frontal lobe — left/front of the brain
-    path: "M 118,108 C 72,145 50,205 54,278 C 57,348 80,402 122,432 C 158,458 202,460 237,446 C 215,418 200,385 197,350 C 192,310 204,272 230,244 C 258,213 276,192 278,170 C 272,148 256,125 236,108 C 200,82 154,76 118,108 Z",
+    // Frontal lobe — front/left of mid-sagittal view
+    clipPath: "M 108,68 C 80,50 58,80 48,120 C 36,165 34,220 40,275 C 46,328 62,370 88,400 C 112,428 142,445 172,450 C 192,420 194,385 186,346 C 178,308 166,272 170,235 C 174,204 188,180 212,160 C 236,140 262,126 278,112 C 250,88 216,72 176,66 C 153,63 128,64 108,68 Z",
   },
   {
     events: ["Badminton", "Table Tennis", "Basketball", "Volleyball"],
-    color: "#9b7fa8",
-    label: "Racket & Court",
-    // Parietal + occipital — top and back
-    path: "M 236,108 C 282,80 362,54 444,54 C 515,54 578,80 618,122 C 652,158 662,204 648,250 C 628,298 592,332 558,356 C 528,375 498,380 472,368 C 445,338 428,302 418,266 C 402,226 394,192 398,162 C 398,142 406,126 418,114 C 360,95 296,90 236,108 Z",
+    color: "#8b9fc7",
+    // Parietal + Occipital — top and back of dome
+    clipPath: "M 278,112 C 308,95 358,76 418,66 C 478,56 540,64 588,90 C 632,114 662,150 670,196 C 678,244 660,288 628,316 C 598,340 560,350 522,350 C 498,328 478,300 466,270 C 452,237 446,204 454,172 C 462,146 480,128 496,118 C 440,104 358,98 278,112 Z",
   },
   {
-    events: ["Running", "Kho Kho", "Kabbadi", "Shot Put"],
-    color: "#7a9e8a",
-    label: "Field & Track",
-    // Cerebellum — lower right
-    path: "M 558,356 C 594,356 634,368 668,390 C 702,412 722,446 716,480 C 710,514 690,538 654,548 C 618,557 578,546 546,520 C 514,494 500,458 506,422 C 512,392 532,368 558,356 Z",
+    events: ["Running", "Kho Kho", "Kabbadi", "Football", "Shot Put", "High Jump"],
+    color: "#7aaa8a",
+    // Cerebellum — lower right cauliflower structure
+    clipPath: "M 522,350 C 556,348 596,360 630,382 C 664,402 690,436 690,472 C 690,508 670,534 640,546 C 610,558 574,548 546,526 C 518,504 504,470 508,440 C 512,416 526,392 522,370 L 522,350 Z",
   },
   {
     events: ["Dance", "Singing", "Stand-up Comedy", "Fun Events"],
-    color: "#c97b5a",
-    label: "Performance",
-    // Brainstem — lower center
-    path: "M 418,266 C 434,300 448,342 452,378 C 456,414 450,446 440,466 C 420,496 390,510 368,505 C 342,500 320,482 314,456 C 306,422 312,386 326,360 C 340,336 360,316 380,308 C 400,300 412,284 418,266 Z",
+    color: "#c97b6a",
+    // Brainstem + temporal — lower center
+    clipPath: "M 466,270 C 480,308 488,348 488,382 C 488,416 476,448 458,468 C 438,490 408,500 382,492 C 354,484 334,462 326,434 C 316,402 326,368 346,348 C 366,326 392,316 416,314 C 444,312 460,292 466,270 Z",
   },
 ];
 
@@ -65,7 +60,7 @@ export default function Brain3D() {
     <div
       id="brain-section"
       ref={sectionRef}
-      style={{ height: `${REGIONS.length * 100 + 100}vh`, position: "relative" }}
+      style={{ height: `${REGIONS.length * 100 + 80}vh`, position: "relative" }}
     >
       <div
         style={{
@@ -75,71 +70,52 @@ export default function Brain3D() {
           overflow: "hidden",
           background: "#0a0a0a",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           gap: 0,
         }}
       >
-        {/* Subtle ambient glow */}
+        {/* Ambient glow behind brain */}
         <div style={{
           position: "absolute",
           inset: 0,
-          background: `radial-gradient(ellipse at 55% 50%, ${region.color}12 0%, transparent 60%)`,
-          transition: "background 0.8s ease",
+          background: `radial-gradient(ellipse at 60% 50%, ${region.color}18 0%, transparent 55%)`,
+          transition: "background 0.9s ease",
           pointerEvents: "none",
         }} />
 
-        {/* Title */}
-        <div style={{ textAlign: "center", marginBottom: 24, zIndex: 5 }}>
-          <p style={{ fontSize: "0.58rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(255,255,255,0.28)", marginBottom: 6 }}>
-            Explore the Fest
-          </p>
-          <h2 style={{ fontSize: "clamp(1.4rem,3vw,2.4rem)", fontWeight: 800, color: "white", letterSpacing: "-0.03em" }}>
-            What Is <span style={{ color: "var(--gold-accent)" }}>Corpus</span>?
-          </h2>
-        </div>
-
-        {/* Brain + Events layout */}
+        {/* Layout: events left | brain center | spacer right */}
         <div style={{
           display: "flex",
           alignItems: "center",
-          gap: "clamp(16px, 4vw, 60px)",
-          padding: "0 clamp(20px, 5vw, 60px)",
           width: "100%",
-          maxWidth: 1000,
+          maxWidth: 1100,
+          padding: "0 clamp(16px,4vw,48px)",
+          gap: "clamp(24px,4vw,56px)",
           zIndex: 5,
         }}>
 
-          {/* Event tags — left */}
+          {/* Left — event list */}
           <div
             key={activeRegion}
             style={{
               flexShrink: 0,
-              width: "clamp(140px, 20vw, 240px)",
-              animation: "brainFadeIn 0.4s ease forwards",
+              width: "clamp(130px,18vw,220px)",
+              animation: "brainFadeIn 0.45s ease forwards",
             }}
           >
-            <div
-              style={{
-                width: 28,
-                height: 2,
-                background: region.color,
-                marginBottom: 16,
-                borderRadius: 1,
-              }}
-            />
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ width: 24, height: 2, background: region.color, marginBottom: 20, borderRadius: 1 }} />
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {region.events.map((ev) => (
                 <span
                   key={ev}
                   style={{
-                    fontSize: "clamp(0.72rem, 1.4vw, 0.9rem)",
+                    fontSize: "clamp(0.7rem,1.3vw,0.88rem)",
                     fontWeight: 600,
-                    letterSpacing: "0.04em",
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
                     color: region.color,
-                    padding: "6px 0",
-                    borderBottom: `1px solid ${region.color}25`,
+                    lineHeight: 1.4,
                   }}
                 >
                   {ev}
@@ -148,16 +124,14 @@ export default function Brain3D() {
             </div>
           </div>
 
-          {/* Brain image + SVG overlay */}
-          <div
-            style={{
-              position: "relative",
-              flex: "1 1 auto",
-              maxWidth: "min(520px, 55vw)",
-              aspectRatio: "4/3",
-            }}
-          >
-            {/* Actual brain image */}
+          {/* Center — brain image + SVG highlights */}
+          <div style={{
+            flex: "1 1 auto",
+            position: "relative",
+            maxWidth: "min(540px, 58vw)",
+            aspectRatio: "780 / 560",
+          }}>
+            {/* Brain image — desaturated base */}
             <img
               src="/brain-sagittal.jpg"
               alt="Mid-sagittal brain section"
@@ -166,23 +140,19 @@ export default function Brain3D() {
                 height: "100%",
                 objectFit: "contain",
                 display: "block",
-                filter: "brightness(0.72) contrast(1.1) saturate(0.7)",
+                filter: "brightness(0.6) contrast(1.15) saturate(0.35)",
               }}
             />
 
-            {/* SVG overlay — colored region highlights */}
+            {/* SVG overlay — all region highlights */}
             <svg
-              viewBox="0 0 775 580"
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-              }}
+              viewBox="0 0 730 560"
+              preserveAspectRatio="xMidYMid meet"
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
             >
               <defs>
-                <filter id="regionGlow">
-                  <feGaussianBlur stdDeviation="8" result="blur" />
+                <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="10" result="blur" />
                   <feMerge>
                     <feMergeNode in="blur" />
                     <feMergeNode in="SourceGraphic" />
@@ -193,24 +163,24 @@ export default function Brain3D() {
               {REGIONS.map((r, i) => (
                 <path
                   key={i}
-                  d={r.path}
+                  d={r.clipPath}
                   fill={r.color}
-                  fillOpacity={i === activeRegion ? 0.48 : 0.04}
+                  fillOpacity={i === activeRegion ? 0.52 : 0.03}
                   stroke={r.color}
-                  strokeWidth={i === activeRegion ? 2 : 0.5}
-                  strokeOpacity={i === activeRegion ? 0.8 : 0.15}
-                  filter={i === activeRegion ? "url(#regionGlow)" : undefined}
-                  style={{ transition: "fill-opacity 0.6s ease, stroke-opacity 0.6s ease" }}
+                  strokeWidth={i === activeRegion ? 2.5 : 0.5}
+                  strokeOpacity={i === activeRegion ? 0.9 : 0.12}
+                  filter={i === activeRegion ? "url(#glow)" : undefined}
+                  style={{ transition: "fill-opacity 0.7s ease, stroke-opacity 0.7s ease" }}
                 />
               ))}
             </svg>
           </div>
 
-          {/* Spacer right — keeps brain centered */}
-          <div style={{ flexShrink: 0, width: "clamp(140px, 20vw, 240px)" }} />
+          {/* Right spacer for balance */}
+          <div style={{ flexShrink: 0, width: "clamp(130px,18vw,220px)" }} />
         </div>
 
-        {/* Bottom progress line */}
+        {/* Bottom progress bar */}
         <div style={{
           position: "absolute",
           bottom: 0,
@@ -218,31 +188,31 @@ export default function Brain3D() {
           height: 2,
           width: `${scrollProgress * 100}%`,
           background: region.color,
-          transition: "width 0.2s ease, background 0.5s ease",
+          transition: "width 0.15s linear, background 0.6s ease",
         }} />
 
         {/* Scroll hint */}
-        {scrollProgress < 0.05 && (
+        {scrollProgress < 0.04 && (
           <div style={{
             position: "absolute",
-            bottom: 30,
+            bottom: 28,
             left: "50%",
             transform: "translateX(-50%)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             gap: 6,
-            opacity: 0.35,
+            opacity: 0.3,
           }}>
-            <div className="scroll-line" />
-            <p style={{ fontSize: "0.55rem", letterSpacing: "0.22em", textTransform: "uppercase" }}>Scroll</p>
+            <div style={{ width: 1, height: 48, background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.5), transparent)", animation: "scrollPulse 2s ease-in-out infinite" }} />
+            <p style={{ fontSize: "0.52rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(255,255,255,0.6)" }}>Scroll</p>
           </div>
         )}
       </div>
 
       <style>{`
         @keyframes brainFadeIn {
-          from { opacity: 0; transform: translateX(-12px); }
+          from { opacity: 0; transform: translateX(-14px); }
           to { opacity: 1; transform: translateX(0); }
         }
       `}</style>
