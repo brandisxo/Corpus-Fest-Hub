@@ -178,7 +178,6 @@ function MenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
             onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.2)")}
           >
             {item.label}
-            <span style={{ fontSize: "1.2rem", opacity: 0.5 }}>&#8599;</span>
           </a>
         ))}
       </div>
@@ -201,7 +200,7 @@ function HeroSection() {
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
-        background: "linear-gradient(135deg, #f5f0e8 0%, #ede5d8 40%, #e0d4c3 70%, #d4c4ae 100%)",
+        background: "linear-gradient(135deg, #d4c4a8 0%, #c8b898 35%, #bda888 65%, #b09878 100%)",
       }}
     >
       {/* Warm radial accent */}
@@ -340,7 +339,7 @@ function HeroSection() {
             onMouseEnter={e => (e.currentTarget.style.background = "#c9a96e")}
             onMouseLeave={e => (e.currentTarget.style.background = "#1a1008")}
           >
-            Explore Events &#8599;
+            Explore Events
           </a>
           <a
             href="#register"
@@ -472,7 +471,7 @@ function PreviousEventsCarousel() {
 // ── Event Card ────────────────────────────────────────────────────────────────
 function EventCard({ event }: { event: typeof SPORTS_EVENTS[0] }) {
   return (
-    <div className="event-card" style={{ padding: 24 }}>
+    <div className="event-card" style={{ padding: 24, height: "100%", display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
         <span className="cat-badge" style={{ color: "var(--gold-accent)", borderColor: "rgba(201,169,110,0.4)", fontSize: "0.6rem" }}>
           {event.cat}
@@ -566,6 +565,7 @@ function EventsSection() {
               opacity: 0,
               transform: "translateY(20px)",
               animation: `fadeInUp 0.5s ease ${i * 0.06}s forwards`,
+              height: "100%",
             }}
           >
             <EventCard event={event} />
@@ -656,7 +656,7 @@ function ScheduleSection() {
                 <span style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.35)" }}>{ev.venue}</span>
               </div>
             </div>
-            <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "1.2rem" }}>&#8599;</span>
+            
           </div>
         ))}
       </div>
@@ -873,14 +873,17 @@ function RegistrationSection() {
                 onChange={e => setForm({ ...form, phone: e.target.value })}
                 required
               />
-              <input
+              <select
                 className="reg-input"
-                type="text"
-                placeholder="College / Year *"
                 value={form.college}
                 onChange={e => setForm({ ...form, college: e.target.value })}
                 required
-              />
+                style={{ appearance: "none" }}
+              >
+                <option value="" disabled>Select Batch *</option>
+                <option value="Batch 2024">Batch 2024</option>
+                <option value="Batch 2025">Batch 2025</option>
+              </select>
             </div>
             <select
               className="reg-input"
@@ -889,17 +892,80 @@ function RegistrationSection() {
               required
               style={{ appearance: "none" }}
             >
-              <option value="" disabled>Select Event Category *</option>
-              <option value="Sports Events">Sports Events</option>
-              <option value="Arts & Culture">Arts & Culture</option>
-              <option value="Academic Events">Academic Events</option>
-              <option value="Fun Events">Fun Events</option>
-              <option value="Multiple Categories">Multiple Categories</option>
+              <option value="" disabled>Select Event *</option>
+              <optgroup label="Track">
+                <option value="Running — 100M Boys">Running — 100M Boys</option>
+                <option value="Running — 100M Girls">Running — 100M Girls</option>
+                <option value="Running — 200M Boys">Running — 200M Boys</option>
+                <option value="Running — 200M Girls">Running — 200M Girls</option>
+                <option value="Running — 400M Boys">Running — 400M Boys</option>
+                <option value="Running — 400M Girls">Running — 400M Girls</option>
+                <option value="Running — 400M Relay">Running — 400M Relay</option>
+              </optgroup>
+              <optgroup label="Athletics">
+                <option value="Shot Put — Boys">Shot Put — Boys</option>
+                <option value="Shot Put — Girls">Shot Put — Girls</option>
+                <option value="High Jump — Boys">High Jump — Boys</option>
+                <option value="High Jump — Girls">High Jump — Girls</option>
+                <option value="Long Jump — Boys">Long Jump — Boys</option>
+              </optgroup>
+              <optgroup label="Racket Sports">
+                <option value="Badminton — Singles">Badminton — Singles</option>
+                <option value="Badminton — Doubles Boys">Badminton — Doubles Boys</option>
+                <option value="Badminton — Doubles Girls">Badminton — Doubles Girls</option>
+                <option value="Table Tennis — Singles Boys">Table Tennis — Singles Boys</option>
+                <option value="Table Tennis — Singles Girls">Table Tennis — Singles Girls</option>
+                <option value="Table Tennis — Doubles Boys">Table Tennis — Doubles Boys</option>
+                <option value="Table Tennis — Doubles Girls">Table Tennis — Doubles Girls</option>
+              </optgroup>
+              <optgroup label="Team Sports">
+                <option value="Volleyball — Boys">Volleyball — Boys</option>
+                <option value="Volleyball — Girls">Volleyball — Girls</option>
+                <option value="Basketball — 3v3 Boys">Basketball — 3v3 Boys</option>
+                <option value="Basketball — 3v3 Girls">Basketball — 3v3 Girls</option>
+                <option value="Basketball — 5v5 Boys">Basketball — 5v5 Boys</option>
+                <option value="Basketball — 5v5 Mixed">Basketball — 5v5 Mixed</option>
+                <option value="Football — 5-a-side Boys">Football — 5-a-side Boys</option>
+              </optgroup>
+              <optgroup label="Field Sports">
+                <option value="Kho Kho — Boys">Kho Kho — Boys</option>
+                <option value="Kho Kho — Girls">Kho Kho — Girls</option>
+                <option value="Kho Kho — Mix">Kho Kho — Mix</option>
+                <option value="Kabbadi — Boys">Kabbadi — Boys</option>
+                <option value="Kabbadi — Girls">Kabbadi — Girls</option>
+                <option value="Satoliya — Boys">Satoliya — Boys</option>
+                <option value="Satoliya — Girls">Satoliya — Girls</option>
+                <option value="Satoliya — Mix">Satoliya — Mix</option>
+              </optgroup>
+              <optgroup label="Board Games">
+                <option value="Chess">Chess</option>
+                <option value="Carrom — Doubles">Carrom — Doubles</option>
+              </optgroup>
+              <optgroup label="Arts & Culture">
+                <option value="Singing — Solo">Singing — Solo</option>
+                <option value="Singing — Duet">Singing — Duet</option>
+                <option value="Singing — Same Song">Singing — Same Song</option>
+                <option value="Dance — Solo">Dance — Solo</option>
+                <option value="Dance — Dual">Dance — Dual</option>
+                <option value="Dance — Group">Dance — Group</option>
+                <option value="Stand-up Comedy">Stand-up Comedy</option>
+                <option value="Art">Art (Visual)</option>
+              </optgroup>
+              <optgroup label="Academic">
+                <option value="Debate">Debate</option>
+              </optgroup>
+              <optgroup label="Fun Events">
+                <option value="Tug of War">Tug of War</option>
+                <option value="Sack Race">Sack Race</option>
+                <option value="Lemon Race">Lemon Race</option>
+                <option value="Three-Leg Race">Three-Leg Race</option>
+                <option value="Balloon Burst">Balloon Burst</option>
+              </optgroup>
             </select>
 
             <div style={{ display: "flex", gap: 16, marginTop: 8, alignItems: "center", flexWrap: "wrap" }}>
               <button type="submit" className="reg-btn" disabled={loading}>
-                {loading ? "Submitting..." : "Register Now \u2197"}
+                {loading ? "Submitting..." : "Register Now"}
               </button>
               <p style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.3)" }}>
                 Free to participate · Open to all batches
