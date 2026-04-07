@@ -1,0 +1,458 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --font-sans: var(--app-font-sans);
+  --font-serif: var(--app-font-serif);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  --background: 30 10% 96%;
+  --foreground: 20 10% 10%;
+  --border: 30 15% 85%;
+  --card: 30 15% 93%;
+  --card-foreground: 20 10% 10%;
+  --primary: 20 10% 10%;
+  --primary-foreground: 30 10% 96%;
+  --secondary: 30 20% 88%;
+  --secondary-foreground: 20 10% 20%;
+  --muted: 30 15% 90%;
+  --muted-foreground: 20 10% 45%;
+  --accent: 35 60% 55%;
+  --accent-foreground: 20 10% 10%;
+
+  --app-font-sans: 'Inter', sans-serif;
+  --app-font-serif: Georgia, serif;
+  --radius: 0.25rem;
+
+  /* MyHealthPrac warm tones */
+  --warm-cream: #f5f0e8;
+  --warm-beige: #e8ddd0;
+  --warm-brown: #8b7355;
+  --deep-black: #0a0a0a;
+  --off-white: #fafaf8;
+  --gold-accent: #c9a96e;
+}
+
+.dark {
+  --background: 0 0% 4%;
+  --foreground: 30 10% 92%;
+  --border: 0 0% 15%;
+  --card: 0 0% 7%;
+  --card-foreground: 30 10% 92%;
+  --primary: 30 10% 92%;
+  --primary-foreground: 0 0% 5%;
+  --secondary: 0 0% 12%;
+  --secondary-foreground: 30 10% 85%;
+  --muted: 0 0% 10%;
+  --muted-foreground: 30 8% 60%;
+  --accent: 35 60% 55%;
+  --accent-foreground: 0 0% 5%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans antialiased;
+    background-color: var(--deep-black);
+    color: var(--off-white);
+    overflow-x: hidden;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--deep-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--warm-brown);
+  border-radius: 2px;
+}
+
+/* Navigation */
+.nav-link {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  color: rgba(255,255,255,1);
+}
+
+/* Hero section */
+.hero-section {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 60% 40%, rgba(139, 95, 50, 0.25) 0%, rgba(10,10,10,1) 70%);
+}
+
+.hero-title {
+  font-size: clamp(4rem, 12vw, 11rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  color: var(--off-white);
+  mix-blend-mode: normal;
+}
+
+.hero-subtitle {
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+
+/* Statue image blended */
+.statue-container {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 55%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.statue-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  mix-blend-mode: luminosity;
+  opacity: 0.45;
+  filter: sepia(20%) contrast(1.15) brightness(0.85);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.7) 45%, rgba(0,0,0,0.6) 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.7) 45%, rgba(0,0,0,0.6) 70%, transparent 100%);
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.5), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* Light section (myhealthprac style) */
+.light-section {
+  background-color: var(--warm-cream);
+  color: var(--deep-black);
+}
+
+/* Cards */
+.event-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94), border-color 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(201, 169, 110, 0.4);
+}
+
+/* Brain section */
+.brain-section {
+  position: relative;
+  background: var(--deep-black);
+}
+
+#brain-canvas {
+  display: block;
+}
+
+/* Section labels */
+.section-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+}
+
+/* Big text style - myhealthprac */
+.display-text {
+  font-size: clamp(2.5rem, 6vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+/* Horizontal scrolling cards */
+.cards-track {
+  display: flex;
+  gap: 24px;
+  animation: scrollCards 40s linear infinite;
+  width: max-content;
+}
+
+.cards-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollCards {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Registration */
+.reg-input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  padding: 14px 18px;
+  color: white;
+  width: 100%;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease, background 0.3s ease;
+  outline: none;
+}
+
+.reg-input:focus {
+  border-color: var(--gold-accent);
+  background: rgba(255,255,255,0.08);
+}
+
+.reg-input::placeholder {
+  color: rgba(255,255,255,0.3);
+}
+
+.reg-btn {
+  background: var(--off-white);
+  color: var(--deep-black);
+  border: none;
+  border-radius: 4px;
+  padding: 14px 32px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.reg-btn:hover {
+  background: var(--gold-accent);
+  transform: translateY(-2px);
+}
+
+/* Menu overlay */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--deep-black);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-100%);
+  transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.menu-overlay.open {
+  transform: translateY(0);
+}
+
+.menu-item {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: rgba(255,255,255,0.2);
+  transition: color 0.3s ease;
+  cursor: pointer;
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 600px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.menu-item:hover {
+  color: var(--off-white);
+}
+
+/* Particle dots - myhealthprac style */
+.dot-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+}
+
+.dot-nav-item {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.dot-nav-item.active {
+  background: var(--gold-accent);
+  transform: scale(1.4);
+}
+
+/* Fade in animation */
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Brain region highlight */
+.brain-info-panel {
+  position: absolute;
+  left: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 320px;
+  pointer-events: none;
+}
+
+/* Schedule tabs */
+.schedule-tab {
+  padding: 10px 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: rgba(255,255,255,0.5);
+  background: transparent;
+}
+
+.schedule-tab.active {
+  background: var(--off-white);
+  color: var(--deep-black);
+  border-color: var(--off-white);
+}
+
+/* Event category badge */
+.cat-badge {
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* Footer */
+.footer-link {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.footer-link:hover {
+  color: rgba(255,255,255,0.8);
+}
+
+/* Noise texture overlay */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px;
+}
+
+/* Arc / semicircle decoration like myhealthprac */
+.arc-decoration {
+  position: absolute;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Glowing dot on arc */
+.arc-dot {
+  width: 10px;
+  height: 10px;
+  background: var(--gold-accent);
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 0 0 12px var(--gold-accent);
+}
+
+/* Progress bar for brain section */
+.brain-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--gold-accent);
+  transition: width 0.4s ease;
+}

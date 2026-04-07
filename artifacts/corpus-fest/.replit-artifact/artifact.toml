@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Corpus - Medical College Fest"
+version = "1.0.0"
+id = "artifacts/corpus-fest"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23449
+
+[services.development]
+run = "pnpm --filter @workspace/corpus-fest run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/corpus-fest", "run", "build" ]
+publicDir = "artifacts/corpus-fest/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23449"
+BASE_PATH = "/"
