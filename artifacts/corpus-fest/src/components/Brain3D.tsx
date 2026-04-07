@@ -1,53 +1,250 @@
 import { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
 
 const REGIONS = [
-  {
-    events: ["Chess", "Debate", "Art", "Academic Quiz"],
-    color: "#c9a96e",
-    // Frontal lobe — front/left of mid-sagittal view
-    clipPath: "M 108,68 C 80,50 58,80 48,120 C 36,165 34,220 40,275 C 46,328 62,370 88,400 C 112,428 142,445 172,450 C 192,420 194,385 186,346 C 178,308 166,272 170,235 C 174,204 188,180 212,160 C 236,140 262,126 278,112 C 250,88 216,72 176,66 C 153,63 128,64 108,68 Z",
-  },
-  {
-    events: ["Badminton", "Table Tennis", "Basketball", "Volleyball"],
-    color: "#8b9fc7",
-    // Parietal + Occipital — top and back of dome
-    clipPath: "M 278,112 C 308,95 358,76 418,66 C 478,56 540,64 588,90 C 632,114 662,150 670,196 C 678,244 660,288 628,316 C 598,340 560,350 522,350 C 498,328 478,300 466,270 C 452,237 446,204 454,172 C 462,146 480,128 496,118 C 440,104 358,98 278,112 Z",
-  },
-  {
-    events: ["Running", "Kho Kho", "Kabbadi", "Football", "Shot Put", "High Jump"],
-    color: "#7aaa8a",
-    // Cerebellum — lower right cauliflower structure
-    clipPath: "M 522,350 C 556,348 596,360 630,382 C 664,402 690,436 690,472 C 690,508 670,534 640,546 C 610,558 574,548 546,526 C 518,504 504,470 508,440 C 512,416 526,392 522,370 L 522,350 Z",
-  },
-  {
-    events: ["Dance", "Singing", "Stand-up Comedy", "Fun Events"],
-    color: "#c97b6a",
-    // Brainstem + temporal — lower center
-    clipPath: "M 466,270 C 480,308 488,348 488,382 C 488,416 476,448 458,468 C 438,490 408,500 382,492 C 354,484 334,462 326,434 C 316,402 326,368 346,348 C 366,326 392,316 416,314 C 444,312 460,292 466,270 Z",
-  },
+  { events: ["Chess", "Debate", "Art", "Academic Quiz"],                           color: "#c9a96e", hex: 0xc9a96e, label: "Frontal Lobe"         },
+  { events: ["Badminton", "Table Tennis", "Basketball", "Volleyball"],             color: "#7eb4d4", hex: 0x7eb4d4, label: "Parietal & Occipital" },
+  { events: ["Running", "Kho Kho", "Kabbadi", "Football", "Shot Put", "High Jump"],color: "#7aaa8a", hex: 0x7aaa8a, label: "Cerebellum"           },
+  { events: ["Dance", "Singing", "Stand-up Comedy", "Fun Events"],                 color: "#c98a6a", hex: 0xc98a6a, label: "Temporal"             },
 ];
 
+function makeBumpySphere(radius: number, segs: number, amt: number): THREE.BufferGeometry {
+  const g = new THREE.SphereGeometry(radius, segs, segs);
+  const p = g.attributes.position as THREE.BufferAttribute;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+    const l = Math.sqrt(x*x + y*y + z*z) || 1;
+    const nx = x/l, ny = y/l, nz = z/l;
+    const b = amt * (
+      Math.sin(nx*22+0.3)*Math.cos(ny*20) +
+      Math.sin(ny*18+1.6)*Math.cos(nz*22) +
+      Math.sin(nz*20+0.9)*Math.cos(nx*18) +
+      0.35*Math.sin(nx*10+ny*8+0.5)
+    );
+    p.setXYZ(i, x+nx*b, y+ny*b, z+nz*b);
+  }
+  g.computeVertexNormals();
+  return g;
+}
+
+function makeCerebellumGeo(): THREE.BufferGeometry {
+  const g = new THREE.SphereGeometry(0.42, 52, 52);
+  const p = g.attributes.position as THREE.BufferAttribute;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+    const l = Math.sqrt(x*x + y*y + z*z) || 1;
+    const nx = x/l, ny = y/l, nz = z/l;
+    const b = 0.055 * (
+      Math.sin(nx*32+0.5)*Math.cos(ny*28) +
+      Math.sin(ny*26+2.1)*Math.cos(nz*30) +
+      Math.sin(nz*28+1.2)*Math.cos(nx*26) +
+      0.3*Math.sin(ny*14+nz*12+0.8)
+    );
+    p.setXYZ(i, x+nx*b, y+ny*b, z+nz*b);
+  }
+  g.computeVertexNormals();
+  return g;
+}
+
+function getVertexRegion(nx: number, ny: number, nz: number): number {
+  if (nz > 0.05 && ny > -0.38) return 0;
+  if (ny > -0.18) return 1;
+  return 3;
+}
+
 export default function Brain3D() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const [activeRegion, setActiveRegion] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
   const activeRef = useRef(0);
 
+  const [webglFailed, setWebglFailed] = useState(false);
+
+  // Store mutable scene objects in a plain ref (no React state)
+  const three = useRef<{
+    renderer: THREE.WebGLRenderer;
+    scene: THREE.Scene;
+    camera: THREE.PerspectiveCamera;
+    group: THREE.Group;
+    rafId: number;
+    cerebrumGeo: THREE.BufferGeometry;
+    colorArr: Float32Array;
+    cerebellumMat: THREE.MeshStandardMaterial;
+    brainstemMat: THREE.MeshStandardMaterial;
+    pLights: THREE.PointLight[];
+    updateRegion: (idx: number) => void;
+  } | null>(null);
+
+  // ── Init Three.js scene ──────────────────────────────────────────────────────
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    let cleanup: (() => void) | null = null;
+    let initDone = false;
+
+    function tryInit() {
+      if (initDone || !container) return;
+      const W = container.clientWidth;
+      const H = container.clientHeight;
+      if (W < 10) return;
+      initDone = true;
+
+      // ── Renderer ────────────────────────────────────────────────────────────
+      let renderer: THREE.WebGLRenderer;
+      try {
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
+      } catch {
+        setWebglFailed(true);
+        return;
+      }
+
+      renderer.setSize(W, H);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0x000000, 0);
+      container.appendChild(renderer.domElement);
+
+      // ── Scene & Camera ──────────────────────────────────────────────────────
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(44, W / H, 0.1, 100);
+      camera.position.set(0, 0, 3.4);
+
+      // ── Lights ──────────────────────────────────────────────────────────────
+      scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+      const key = new THREE.DirectionalLight(0xfff8f0, 1.5);
+      key.position.set(3, 4, 3);
+      scene.add(key);
+      const fill = new THREE.DirectionalLight(0xc0d8ff, 0.4);
+      fill.position.set(-4, 1, -2);
+      scene.add(fill);
+
+      const plPositions: [number,number,number][] = [
+        [0, 0.3, 2.5], [0, 1.5, -1.5], [0, -1.5, -2.2], [1.2, -1.2, 0.5],
+      ];
+      const pLights = plPositions.map((pos, i) => {
+        const l = new THREE.PointLight(REGIONS[i].hex, 0.25, 6);
+        l.position.set(...pos);
+        scene.add(l);
+        return l;
+      });
+
+      // ── Group ───────────────────────────────────────────────────────────────
+      const group = new THREE.Group();
+      group.scale.set(1.08, 0.93, 1.12);
+      scene.add(group);
+
+      // ── Cerebrum with vertex colours ────────────────────────────────────────
+      const cerebrumGeo = makeBumpySphere(1.0, 80, 0.06);
+      const colorArr = new Float32Array(cerebrumGeo.attributes.position.count * 3);
+
+      function rebuildColors(active: number) {
+        const pos = cerebrumGeo.attributes.position as THREE.BufferAttribute;
+        const activeC = new THREE.Color(REGIONS[active].hex);
+        const dimC = new THREE.Color(0x111111);
+        for (let i = 0; i < pos.count; i++) {
+          const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+          const l = Math.sqrt(x*x + y*y + z*z) || 1;
+          const region = getVertexRegion(x/l, y/l, z/l);
+          const isActive = (region === active && active !== 2);
+          const c = isActive ? activeC : dimC;
+          colorArr[i*3] = c.r; colorArr[i*3+1] = c.g; colorArr[i*3+2] = c.b;
+        }
+        cerebrumGeo.setAttribute("color", new THREE.BufferAttribute(colorArr.slice(), 3));
+      }
+
+      rebuildColors(0);
+      const cerebrumMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.75, metalness: 0.05 });
+      group.add(new THREE.Mesh(cerebrumGeo, cerebrumMat));
+
+      // ── Cerebellum ──────────────────────────────────────────────────────────
+      const cerebellumMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.72, metalness: 0.05 });
+      const cMesh = new THREE.Mesh(makeCerebellumGeo(), cerebellumMat);
+      cMesh.position.set(0, -0.52, -0.72);
+      cMesh.scale.set(1, 0.78, 0.88);
+      group.add(cMesh);
+
+      // ── Brainstem ───────────────────────────────────────────────────────────
+      const brainstemMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.7, metalness: 0.08 });
+      const bMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.085, 0.55, 20), brainstemMat);
+      bMesh.position.set(0, -1.0, -0.22);
+      bMesh.rotation.x = 0.28;
+      group.add(bMesh);
+
+      // ── Corpus callosum ridge ────────────────────────────────────────────────
+      const rMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(1, 20, 8),
+        new THREE.MeshStandardMaterial({ color: 0x080808, roughness: 0.9 })
+      );
+      rMesh.scale.set(0.62, 0.075, 0.68);
+      rMesh.position.set(0, -0.05, -0.05);
+      group.add(rMesh);
+
+      // ── Region update function ───────────────────────────────────────────────
+      function updateRegion(idx: number) {
+        rebuildColors(idx);
+        cerebellumMat.color.set(idx === 2 ? REGIONS[2].hex : 0x111111);
+        cerebellumMat.emissive.set(idx === 2 ? new THREE.Color(REGIONS[2].hex).multiplyScalar(0.25) : 0x000000);
+        brainstemMat.color.set(idx === 3 ? REGIONS[3].hex : 0x111111);
+        brainstemMat.emissive.set(idx === 3 ? new THREE.Color(REGIONS[3].hex).multiplyScalar(0.25) : 0x000000);
+        pLights.forEach((l, i) => { l.intensity = i === idx ? 2.2 : 0.25; });
+      }
+
+      // ── Render loop ──────────────────────────────────────────────────────────
+      const t0 = performance.now();
+      let rafId = 0;
+      function animate() {
+        rafId = requestAnimationFrame(animate);
+        group.rotation.y = (performance.now() - t0) / 1000 * 0.13;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      // ── Resize ───────────────────────────────────────────────────────────────
+      function onResize() {
+        const W2 = container.clientWidth, H2 = container.clientHeight;
+        camera.aspect = W2 / H2;
+        camera.updateProjectionMatrix();
+        renderer.setSize(W2, H2);
+      }
+      window.addEventListener("resize", onResize);
+
+      three.current = { renderer, scene, camera, group, rafId, cerebrumGeo, colorArr, cerebellumMat, brainstemMat, pLights, updateRegion };
+
+      cleanup = () => {
+        cancelAnimationFrame(rafId);
+        window.removeEventListener("resize", onResize);
+        renderer.dispose();
+        if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
+        three.current = null;
+      };
+    }
+
+    const ro = new ResizeObserver(tryInit);
+    ro.observe(container);
+    setTimeout(tryInit, 80);
+
+    return () => {
+      ro.disconnect();
+      cleanup?.();
+    };
+  }, []);
+
+  // Update 3D scene when region changes
+  useEffect(() => {
+    three.current?.updateRegion(activeRegion);
+  }, [activeRegion]);
+
+  // Scroll tracking
   useEffect(() => {
     const onScroll = () => {
       const section = document.getElementById("brain-section");
       if (!section) return;
-      const rect = section.getBoundingClientRect();
-      const sectionTop = window.scrollY + rect.top;
-      const scrolled = window.scrollY - sectionTop;
-      const sectionH = section.offsetHeight - window.innerHeight;
-      const progress = Math.max(0, Math.min(1, scrolled / sectionH));
+      const top = window.scrollY + section.getBoundingClientRect().top;
+      const progress = Math.max(0, Math.min(1, (window.scrollY - top) / (section.offsetHeight - window.innerHeight)));
       setScrollProgress(progress);
       const idx = Math.min(REGIONS.length - 1, Math.floor(progress * REGIONS.length));
-      if (idx !== activeRef.current) {
-        activeRef.current = idx;
-        setActiveRegion(idx);
-      }
+      if (idx !== activeRef.current) { activeRef.current = idx; setActiveRegion(idx); }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     setTimeout(onScroll, 100);
@@ -57,153 +254,42 @@ export default function Brain3D() {
   const region = REGIONS[activeRegion];
 
   return (
-    <div
-      id="brain-section"
-      ref={sectionRef}
-      style={{ height: `${REGIONS.length * 100 + 80}vh`, position: "relative" }}
-    >
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          overflow: "hidden",
-          background: "#0a0a0a",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 0,
-        }}
-      >
-        {/* Ambient glow behind brain */}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          background: `radial-gradient(ellipse at 60% 50%, ${region.color}18 0%, transparent 55%)`,
-          transition: "background 0.9s ease",
-          pointerEvents: "none",
-        }} />
+    <div id="brain-section" ref={sectionRef} style={{ height: `${REGIONS.length * 100 + 80}vh`, position: "relative" }}>
+      <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", background: "#0a0a0a", display: "flex", alignItems: "center", justifyContent: "center" }}>
 
-        {/* Layout: events left | brain center | spacer right */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          width: "100%",
-          maxWidth: 1100,
-          padding: "0 clamp(16px,4vw,48px)",
-          gap: "clamp(24px,4vw,56px)",
-          zIndex: 5,
-        }}>
+        {/* Ambient color bloom */}
+        <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 58% 50%, ${region.color}20 0%, transparent 55%)`, transition: "background 1s ease", pointerEvents: "none" }} />
 
-          {/* Left — event list */}
-          <div
-            key={activeRegion}
-            style={{
-              flexShrink: 0,
-              width: "clamp(130px,18vw,220px)",
-              animation: "brainFadeIn 0.45s ease forwards",
-            }}
-          >
-            <div style={{ width: 24, height: 2, background: region.color, marginBottom: 20, borderRadius: 1 }} />
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {region.events.map((ev) => (
-                <span
-                  key={ev}
-                  style={{
-                    fontSize: "clamp(0.7rem,1.3vw,0.88rem)",
-                    fontWeight: 600,
-                    letterSpacing: "0.06em",
-                    textTransform: "uppercase",
-                    color: region.color,
-                    lineHeight: 1.4,
-                  }}
-                >
+        <div style={{ display: "flex", alignItems: "center", width: "100%", maxWidth: 1100, padding: "0 clamp(16px,4vw,48px)", gap: "clamp(24px,4vw,48px)", zIndex: 5 }}>
+
+          {/* Left panel — events */}
+          <div key={activeRegion} style={{ flexShrink: 0, width: "clamp(130px,18vw,220px)", animation: "brainFadeIn 0.5s ease forwards" }}>
+            <p style={{ fontSize: "0.48rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", marginBottom: 12 }}>
+              {region.label}
+            </p>
+            <div style={{ width: 24, height: 2, background: region.color, marginBottom: 18, borderRadius: 1 }} />
+            <div style={{ display: "flex", flexDirection: "column", gap: 13 }}>
+              {region.events.map(ev => (
+                <span key={ev} style={{ fontSize: "clamp(0.7rem,1.25vw,0.86rem)", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: region.color, lineHeight: 1.3 }}>
                   {ev}
                 </span>
               ))}
             </div>
           </div>
 
-          {/* Center — brain image + SVG highlights */}
-          <div style={{
-            flex: "1 1 auto",
-            position: "relative",
-            maxWidth: "min(540px, 58vw)",
-            aspectRatio: "780 / 560",
-          }}>
-            {/* Brain image — desaturated base */}
-            <img
-              src="/brain-sagittal.jpg"
-              alt="Mid-sagittal brain section"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-                display: "block",
-                filter: "brightness(0.6) contrast(1.15) saturate(0.35)",
-              }}
-            />
+          {/* 3D canvas container */}
+          <div ref={containerRef} style={{ flex: "1 1 auto", maxWidth: "min(520px,56vw)", aspectRatio: "1/1" }} />
 
-            {/* SVG overlay — all region highlights */}
-            <svg
-              viewBox="0 0 730 560"
-              preserveAspectRatio="xMidYMid meet"
-              style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-            >
-              <defs>
-                <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-                  <feGaussianBlur stdDeviation="10" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-
-              {REGIONS.map((r, i) => (
-                <path
-                  key={i}
-                  d={r.clipPath}
-                  fill={r.color}
-                  fillOpacity={i === activeRegion ? 0.52 : 0.03}
-                  stroke={r.color}
-                  strokeWidth={i === activeRegion ? 2.5 : 0.5}
-                  strokeOpacity={i === activeRegion ? 0.9 : 0.12}
-                  filter={i === activeRegion ? "url(#glow)" : undefined}
-                  style={{ transition: "fill-opacity 0.7s ease, stroke-opacity 0.7s ease" }}
-                />
-              ))}
-            </svg>
-          </div>
-
-          {/* Right spacer for balance */}
+          {/* Right spacer */}
           <div style={{ flexShrink: 0, width: "clamp(130px,18vw,220px)" }} />
         </div>
 
-        {/* Bottom progress bar */}
-        <div style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          height: 2,
-          width: `${scrollProgress * 100}%`,
-          background: region.color,
-          transition: "width 0.15s linear, background 0.6s ease",
-        }} />
+        {/* Progress bar */}
+        <div style={{ position: "absolute", bottom: 0, left: 0, height: 2, width: `${scrollProgress * 100}%`, background: region.color, transition: "width 0.15s linear, background 0.6s ease" }} />
 
         {/* Scroll hint */}
         {scrollProgress < 0.04 && (
-          <div style={{
-            position: "absolute",
-            bottom: 28,
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 6,
-            opacity: 0.3,
-          }}>
+          <div style={{ position: "absolute", bottom: 28, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, opacity: 0.3 }}>
             <div style={{ width: 1, height: 48, background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.5), transparent)", animation: "scrollPulse 2s ease-in-out infinite" }} />
             <p style={{ fontSize: "0.52rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(255,255,255,0.6)" }}>Scroll</p>
           </div>
