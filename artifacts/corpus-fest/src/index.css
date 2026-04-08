@@ -270,6 +270,17 @@
   color: rgba(255,255,255,0.3);
 }
 
+.reg-input option, .reg-input optgroup {
+  background: #1a1208;
+  color: rgba(255,255,255,0.85);
+}
+
+.reg-input optgroup {
+  color: var(--gold-accent);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+}
+
 .reg-btn {
   background: var(--off-white);
   color: var(--deep-black);

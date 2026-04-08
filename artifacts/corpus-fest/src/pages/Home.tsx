@@ -200,7 +200,7 @@ function HeroSection() {
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
-        background: "linear-gradient(145deg, #f2ece2 0%, #e8dfd0 45%, #ddd0be 80%, #d4c4ae 100%)",
+        background: "linear-gradient(145deg, #e4dcd0 0%, #d9cfc0 45%, #cdc0ac 80%, #c1b09a 100%)",
       }}
     >
       {/* Subtle warm vignette bottom */}
@@ -451,7 +451,7 @@ function PreviousEventsCarousel() {
 // ── Event Card ────────────────────────────────────────────────────────────────
 function EventCard({ event }: { event: typeof SPORTS_EVENTS[0] }) {
   return (
-    <div className="event-card" style={{ padding: 24 }}>
+    <div className="event-card" style={{ padding: 24, height: "100%" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
         <span className="cat-badge" style={{ color: "var(--gold-accent)", borderColor: "rgba(201,169,110,0.35)", fontSize: "0.58rem" }}>
           {event.cat}
@@ -505,9 +505,9 @@ function EventsSection() {
           </button>
         ))}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px,1fr))", gap: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px,1fr))", gap: 14, gridAutoRows: "1fr", alignItems: "stretch" }}>
         {tabData[activeTab].map((event, i) => (
-          <div key={event.name} style={{ opacity: 0, transform: "translateY(18px)", animation: `fadeInUp 0.45s ease ${i * 0.06}s forwards` }}>
+          <div key={event.name} style={{ opacity: 0, transform: "translateY(18px)", animation: `fadeInUp 0.45s ease ${i * 0.06}s forwards`, height: "100%" }}>
             <EventCard event={event} />
           </div>
         ))}
@@ -595,7 +595,6 @@ function ScheduleSection() {
                 <span style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.3)" }}>{ev.venue}</span>
               </div>
             </div>
-            <span style={{ color: "rgba(255,255,255,0.12)", fontSize: "1.1rem" }}>&#8599;</span>
           </div>
         ))}
       </div>
@@ -656,7 +655,7 @@ function SplitInfoSection() {
 function RegistrationSection() {
   const ref = useRef<HTMLDivElement>(null);
   const visible = useInView(ref);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", college: "", events: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", batch: "", events: "" });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -669,7 +668,7 @@ function RegistrationSection() {
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, college: form.batch }),
       });
       if (!res.ok) throw new Error("Registration failed. Please try again.");
       setSubmitted(true);
@@ -711,7 +710,17 @@ function RegistrationSection() {
             </div>
             <div className="reg-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
               <input className="reg-input" type="tel" placeholder="Phone Number *" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} required />
-              <input className="reg-input" type="text" placeholder="College / Year *" value={form.college} onChange={e => setForm({ ...form, college: e.target.value })} required />
+              <select
+                className="reg-input"
+                value={form.batch}
+                onChange={e => setForm({ ...form, batch: e.target.value })}
+                required
+                style={{ appearance: "none", cursor: "pointer" }}
+              >
+                <option value="" disabled>Batch *</option>
+                <option value="Batch 2024">Batch 2024</option>
+                <option value="Batch 2025">Batch 2025</option>
+              </select>
             </div>
             <select
               className="reg-input"
@@ -720,12 +729,75 @@ function RegistrationSection() {
               required
               style={{ appearance: "none", cursor: "pointer" }}
             >
-              <option value="" disabled>Select Event Category *</option>
-              <option value="sports">Sports Events</option>
-              <option value="arts">Arts & Culture</option>
-              <option value="academic">Academic Events</option>
-              <option value="fun">Fun Events</option>
-              <option value="multiple">Multiple Categories</option>
+              <option value="" disabled>Select Event *</option>
+              <optgroup label="Track Events">
+                <option value="Running — 100M Boys">Running — 100M Boys</option>
+                <option value="Running — 100M Girls">Running — 100M Girls</option>
+                <option value="Running — 200M Boys">Running — 200M Boys</option>
+                <option value="Running — 200M Girls">Running — 200M Girls</option>
+                <option value="Running — 400M Boys">Running — 400M Boys</option>
+                <option value="Running — 400M Girls">Running — 400M Girls</option>
+                <option value="Running — 400M Relay">Running — 400M Relay</option>
+              </optgroup>
+              <optgroup label="Athletics">
+                <option value="Shot Put — Boys">Shot Put — Boys</option>
+                <option value="Shot Put — Girls">Shot Put — Girls</option>
+                <option value="High Jump — Boys">High Jump — Boys</option>
+                <option value="High Jump — Girls">High Jump — Girls</option>
+                <option value="Long Jump — Boys">Long Jump — Boys</option>
+              </optgroup>
+              <optgroup label="Racket Sports">
+                <option value="Badminton — Singles">Badminton — Singles</option>
+                <option value="Badminton — Doubles">Badminton — Doubles</option>
+                <option value="Table Tennis — Singles Boys">Table Tennis — Singles Boys</option>
+                <option value="Table Tennis — Singles Girls">Table Tennis — Singles Girls</option>
+                <option value="Table Tennis — Doubles Boys">Table Tennis — Doubles Boys</option>
+                <option value="Table Tennis — Doubles Girls">Table Tennis — Doubles Girls</option>
+              </optgroup>
+              <optgroup label="Team Sports">
+                <option value="Basketball — 3v3 Boys">Basketball — 3v3 Boys</option>
+                <option value="Basketball — 3v3 Girls">Basketball — 3v3 Girls</option>
+                <option value="Basketball — 5v5 Boys">Basketball — 5v5 Boys</option>
+                <option value="Basketball — 5v5 Mixed">Basketball — 5v5 Mixed</option>
+                <option value="Volleyball — Boys">Volleyball — Boys</option>
+                <option value="Volleyball — Girls">Volleyball — Girls</option>
+                <option value="Football — 5-a-side Boys">Football — 5-a-side Boys</option>
+                <option value="Kho Kho — Boys">Kho Kho — Boys</option>
+                <option value="Kho Kho — Girls">Kho Kho — Girls</option>
+                <option value="Kho Kho — Mix">Kho Kho — Mix</option>
+                <option value="Kabbadi — Boys">Kabbadi — Boys</option>
+                <option value="Kabbadi — Girls">Kabbadi — Girls</option>
+                <option value="Satoliya — Boys">Satoliya — Boys</option>
+                <option value="Satoliya — Girls">Satoliya — Girls</option>
+                <option value="Satoliya — Mix">Satoliya — Mix</option>
+              </optgroup>
+              <optgroup label="Board Games">
+                <option value="Chess">Chess</option>
+                <option value="Carrom — Doubles">Carrom — Doubles</option>
+              </optgroup>
+              <optgroup label="Arts & Music">
+                <option value="Singing — Solo">Singing — Solo</option>
+                <option value="Singing — Same Song">Singing — Same Song</option>
+                <option value="Singing — Random Song">Singing — Random Song</option>
+                <option value="Singing — Duet">Singing — Duet</option>
+                <option value="Dance — Solo">Dance — Solo</option>
+                <option value="Dance — Dual">Dance — Dual</option>
+                <option value="Dance — Group">Dance — Group</option>
+                <option value="Art — Visual Arts">Art — Visual Arts</option>
+                <option value="Stand-up Comedy">Stand-up Comedy</option>
+              </optgroup>
+              <optgroup label="Academic">
+                <option value="Debate — Rapid Fire Round">Debate — Rapid Fire Round</option>
+                <option value="Debate — Luck by Chance">Debate — Luck by Chance</option>
+                <option value="Debate — For/Against Motion">Debate — For/Against Motion</option>
+              </optgroup>
+              <optgroup label="Fun Events">
+                <option value="Tug of War">Tug of War</option>
+                <option value="Sack Race">Sack Race</option>
+                <option value="Lemon Race">Lemon Race</option>
+                <option value="Three-Leg Race">Three-Leg Race</option>
+                <option value="Balloon Burst">Balloon Burst</option>
+              </optgroup>
             </select>
 
             {error && (
@@ -734,7 +806,7 @@ function RegistrationSection() {
 
             <div style={{ display: "flex", gap: 16, marginTop: 8, alignItems: "center", flexWrap: "wrap" }}>
               <button type="submit" className="reg-btn" disabled={loading} style={{ opacity: loading ? 0.7 : 1 }}>
-                {loading ? "Submitting..." : "Register Now  ↗"}
+                {loading ? "Submitting..." : "Register Now"}
               </button>
               <p style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.25)", fontFamily: "'DM Sans', sans-serif" }}>
                 Free to participate · Open to all batches
