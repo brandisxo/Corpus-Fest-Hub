@@ -13,7 +13,6 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **API framework**: Express 5
 - **Database**: PostgreSQL + Drizzle ORM
 - **Validation**: Zod (`zod/v4`), `drizzle-zod`
-- **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (CJS bundle)
 
 ## Artifacts
@@ -21,26 +20,47 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 ### Corpus Fest Website (`artifacts/corpus-fest`)
 - **Type**: react-vite, mounted at `/`
 - **Purpose**: Annual medical college sports & cultural fest website
+- **Fonts**: Cormorant Garamond (display/serif) + DM Sans (body/UI)
 - **Key features**:
-  - Hero with Asclepius statue blended (myhealthprac color palette + style)
-  - Scrolling previous events carousel
-  - "What If" scroll-driven text animation section
-  - Interactive 3D SVG brain (scroll-driven, no WebGL dependency) with 4 regions → event categories
-  - Events section with tabs: Sports, Arts, Academic, Fun
+  - Hero: warm cream background, Asclepius statue blended (multiply), Cormorant Garamond italic title
+  - Scrolling previous events cards carousel
+  - Scroll-driven SVG anatomical brain (3D CSS perspective animation) with 4 regions → event categories
+  - On desktop WebGL: Three.js procedural brain with anatomical warm-pink colors
+  - Events section with 4 tabs: Sports, Arts, Academic, Fun (20+ events)
   - Day-by-day schedule (Kaizen-inspired)
-  - Registration form
+  - Working registration form → POST /api/register
+  - About Corpus section below Schedule
   - Full hamburger menu overlay
-- **Events data**: 13 sports (running, chess, table tennis, kho kho, kabbadi, shot put, etc.) + arts + academic + fun
-- **Brain regions**: Cerebrum→Academic, Cerebellum→Racket Sports, Brainstem→Endurance, Frontal→Performance
-- **Color palette**: myhealthprac: #0a0a0a deep black, #fafaf8 off-white, #c9a96e gold accent, warm cream/beige
+  - No emojis — professional icons/typography only
+- **Events data**: 13 sports + arts + academic + fun events
+- **Brain regions**: Frontal→Academic/Arts, Parietal→Racket/Court Sports, Cerebellum→Field/Track, Temporal→Performance Arts
+- **Color palette**: #0a0a0a deep black, #f5f0e8 warm cream, #c9a96e gold accent, #1a0e04 dark brown
+
+### API Server (`artifacts/api-server`)
+- **Type**: api, port 8080
+- **Routes**:
+  - `GET /api/health` — health check
+  - `POST /api/register` — registration form submission (stores to `registrations.json`, sends emails via Resend if configured)
+  - `GET /api/registrations` — view all registrations (requires `x-admin-token` header)
+- **Registration data stored at**: `artifacts/api-server/registrations.json`
+
+## Email Setup (Registration)
+
+To enable email confirmation:
+1. Get a Resend API key from resend.com (free tier: 100 emails/day)
+2. Set the `RESEND_API_KEY` environment secret
+3. Set `ORGANIZER_EMAIL` to your email (default: ayushxbaranda@gmail.com)
+
+Without `RESEND_API_KEY`, registrations are still saved to `registrations.json` — no email is sent, but data is preserved.
 
 ## Key Commands
 
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- `pnpm --filter @workspace/api-server run dev` — run API server locally
-- `pnpm --filter @workspace/corpus-fest run dev` — run corpus fest website locally
+- `pnpm --filter @workspace/api-server run dev` — run API server locally (port 8080)
+- `pnpm --filter @workspace/corpus-fest run dev` — run corpus fest website
+- `pnpm --filter @workspace/corpus-fest install` — install frontend packages (three.js etc.)
 
-See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
+## Vite Proxy
+
+The corpus-fest Vite dev server proxies `/api` → `http://localhost:8080` so registration form calls work in development.

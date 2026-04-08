@@ -40,8 +40,8 @@
   --accent: 35 60% 55%;
   --accent-foreground: 20 10% 10%;
 
-  --app-font-sans: 'Inter', sans-serif;
-  --app-font-serif: Georgia, serif;
+  --app-font-sans: 'DM Sans', 'Inter', sans-serif;
+  --app-font-serif: 'Cormorant Garamond', Georgia, serif;
   --radius: 0.25rem;
 
   /* MyHealthPrac warm tones */
@@ -458,58 +458,68 @@
   transition: width 0.4s ease;
 }
 
-/* ── Mobile responsive fixes ─────────────────────────────── */
-@media (max-width: 640px) {
-  .hero-title {
-    white-space: normal;
-    font-size: clamp(5rem, 22vw, 8rem);
-  }
-
-  /* Stats pills — stack into a row that wraps */
-  .hero-stats {
-    flex-direction: row !important;
-    flex-wrap: wrap;
-    bottom: 80px !important;
-    right: 16px !important;
-    left: 16px !important;
-    justify-content: flex-start;
-    gap: 8px !important;
-  }
-
-  /* Brain section info panel stacks below brain on small screens */
-  #brain-section .brain-left-panel {
-    position: static !important;
-    transform: none !important;
-    text-align: center;
-    padding: 24px 20px;
+/* ── Mobile responsive ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Hero — allow content to take full width, statue fades more */
+  #hero > div[style] {
     max-width: 100% !important;
+    padding-right: clamp(24px,6vw,48px) !important;
   }
 
-  /* About section single column */
-  .about-grid {
+  /* About corpus — single column */
+  section[style*="1fr 1fr"] {
     grid-template-columns: 1fr !important;
   }
 
-  /* Schedule items wrap */
-  .schedule-event-row {
-    flex-direction: column;
-    gap: 8px;
+  /* Registration form — stack inputs */
+  .reg-form-row {
+    grid-template-columns: 1fr !important;
   }
+}
 
-  /* Reduce section padding on mobile */
+@media (max-width: 640px) {
   section {
     padding-left: 20px !important;
     padding-right: 20px !important;
   }
-}
-
-@media (max-width: 480px) {
-  .hero-title {
-    font-size: clamp(4rem, 20vw, 6.5rem);
-    white-space: normal;
-  }
 
   .display-text {
     font-size: clamp(2rem, 9vw, 3.5rem) !important;
+  }
+
+  /* Brain section — stack the three columns vertically */
+  #brain-section > div > div[style*="maxWidth: 1100"] {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 20px !important;
+  }
+
+  /* Brain visual takes full width on mobile */
+  #brain-section > div > div[style*="maxWidth: 1100"] > div[style*="54vw"] {
+    max-width: 88vw !important;
+    min-width: 0 !important;
+  }
+
+  /* Registration inputs — always full width on small screens */
+  .reg-input {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Ensure CORPUS stays on one line on small phones */
+  h1[style*="Cormorant"] {
+    font-size: clamp(3.2rem, 13vw, 5rem) !important;
+    white-space: nowrap !important;
+  }
+
+  /* Hero content max width full on phones */
+  #hero > div[style*="zIndex: 2"] {
+    max-width: 90% !important;
+  }
+
+  /* Cards carousel adjust */
+  .cards-track > div {
+    width: 230px !important;
   }
 }

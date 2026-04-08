@@ -44,7 +44,8 @@ const PREVIOUS_EVENTS = [
   { title: "Art & Culture Week", description: "A week-long celebration of student creativity", year: "2022" },
 ];
 
-function useInView(ref: React.RefObject<Element | null>, threshold = 0.15) {
+// ── Utility hooks ──────────────────────────────────────────────────────────────
+function useInView(ref: React.RefObject<Element | null>, threshold = 0.12) {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
     const el = ref.current;
@@ -62,7 +63,7 @@ function useInView(ref: React.RefObject<Element | null>, threshold = 0.15) {
 function Navbar({ onMenuOpen }: { onMenuOpen: () => void }) {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 50);
+    const handler = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
@@ -75,27 +76,22 @@ function Navbar({ onMenuOpen }: { onMenuOpen: () => void }) {
         left: 0,
         right: 0,
         zIndex: 80,
-        padding: "20px clamp(20px,5vw,48px)",
+        padding: "20px clamp(20px,5vw,52px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        background: scrolled ? "rgba(10,10,10,0.92)" : "transparent",
-        backdropFilter: scrolled ? "blur(12px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none",
+        background: scrolled ? "rgba(5,5,5,0.94)" : "transparent",
+        backdropFilter: scrolled ? "blur(14px)" : "none",
+        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.05)" : "none",
         transition: "all 0.4s ease",
       }}
     >
-      <span style={{ fontWeight: 800, fontSize: "1.1rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "white" }}>
+      <span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "white", fontFamily: "'DM Sans', sans-serif" }}>
         CORPUS
       </span>
-      <div style={{ display: "flex", alignItems: "center", gap: "clamp(16px,3vw,32px)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "clamp(14px,2.5vw,28px)" }}>
         {["Events", "Schedule", "Register"].map((item) => (
-          <a
-            key={item}
-            href={`#${item.toLowerCase()}`}
-            className="nav-link"
-            style={{ textDecoration: "none" }}
-          >
+          <a key={item} href={`#${item.toLowerCase()}`} className="nav-link" style={{ textDecoration: "none" }}>
             {item}
           </a>
         ))}
@@ -103,10 +99,10 @@ function Navbar({ onMenuOpen }: { onMenuOpen: () => void }) {
           onClick={onMenuOpen}
           style={{
             background: "none",
-            border: "1px solid rgba(255,255,255,0.25)",
+            border: "1px solid rgba(255,255,255,0.22)",
             borderRadius: "50%",
-            width: 38,
-            height: 38,
+            width: 36,
+            height: 36,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -115,10 +111,10 @@ function Navbar({ onMenuOpen }: { onMenuOpen: () => void }) {
             flexShrink: 0,
           }}
         >
-          <svg width="14" height="10" viewBox="0 0 14 10">
-            <line x1="0" y1="1" x2="14" y2="1" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="0" y1="5" x2="14" y2="5" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="0" y1="9" x2="14" y2="9" stroke="currentColor" strokeWidth="1.5" />
+          <svg width="13" height="9" viewBox="0 0 13 9">
+            <line x1="0" y1="1" x2="13" y2="1" stroke="currentColor" strokeWidth="1.5" />
+            <line x1="0" y1="4.5" x2="13" y2="4.5" stroke="currentColor" strokeWidth="1.5" />
+            <line x1="0" y1="8" x2="13" y2="8" stroke="currentColor" strokeWidth="1.5" />
           </svg>
         </button>
       </div>
@@ -126,6 +122,7 @@ function Navbar({ onMenuOpen }: { onMenuOpen: () => void }) {
   );
 }
 
+// ── Menu overlay ───────────────────────────────────────────────────────────────
 function MenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const items = [
     { label: "Home", href: "#hero" },
@@ -138,7 +135,7 @@ function MenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(10,10,10,0.98)",
+        background: "rgba(8,8,8,0.98)",
         zIndex: 100,
         display: "flex",
         flexDirection: "column",
@@ -150,12 +147,14 @@ function MenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
     >
       <button
         onClick={onClose}
-        style={{ position: "absolute", top: 28, right: 40, background: "none", border: "none", color: "white", fontSize: "1.5rem", cursor: "pointer", opacity: 0.6 }}
+        style={{ position: "absolute", top: 24, right: 36, background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: "1.6rem", cursor: "pointer", lineHeight: 1 }}
       >
-        ×
+        &times;
       </button>
-      <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.7rem", letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: 40 }}>MENU</p>
-      <div style={{ width: "100%", maxWidth: 560, padding: "0 24px" }}>
+      <p style={{ color: "rgba(255,255,255,0.25)", fontSize: "0.65rem", letterSpacing: "0.3em", textTransform: "uppercase", marginBottom: 36 }}>
+        MENU
+      </p>
+      <div style={{ width: "100%", maxWidth: 520, padding: "0 28px" }}>
         {items.map((item) => (
           <a
             key={item.label}
@@ -165,19 +164,21 @@ function MenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              padding: "20px 0",
-              borderBottom: "1px solid rgba(255,255,255,0.08)",
-              fontSize: "clamp(2rem, 5vw, 3.5rem)",
+              padding: "18px 0",
+              borderBottom: "1px solid rgba(255,255,255,0.07)",
+              fontSize: "clamp(2rem,6vw,3.5rem)",
               fontWeight: 700,
-              color: "rgba(255,255,255,0.2)",
+              color: "rgba(255,255,255,0.18)",
               textDecoration: "none",
               letterSpacing: "-0.03em",
               transition: "color 0.3s ease",
+              fontFamily: "'DM Sans', sans-serif",
             }}
             onMouseEnter={e => (e.currentTarget.style.color = "white")}
-            onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.2)")}
+            onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.18)")}
           >
             {item.label}
+            <span style={{ fontSize: "1.5rem", opacity: 0.4 }}>&#8599;</span>
           </a>
         ))}
       </div>
@@ -185,7 +186,7 @@ function MenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
   );
 }
 
-// ── Hero ─────────────────────────────────────────────────────────────────────
+// ── Hero ───────────────────────────────────────────────────────────────────────
 function HeroSection() {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
@@ -195,137 +196,145 @@ function HeroSection() {
       id="hero"
       style={{
         position: "relative",
-        height: "100vh",
-        minHeight: 600,
+        minHeight: "100vh",
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
-        background: "#0a0a0a",
+        background: "linear-gradient(145deg, #f2ece2 0%, #e8dfd0 45%, #ddd0be 80%, #d4c4ae 100%)",
       }}
     >
-      {/* Warm gold ambient glow */}
+      {/* Subtle warm vignette bottom */}
       <div style={{
         position: "absolute",
-        inset: 0,
-        background: "radial-gradient(ellipse at 60% 40%, rgba(201,169,110,0.12) 0%, transparent 60%)",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: "35%",
+        background: "linear-gradient(to top, rgba(210,192,168,0.5), transparent)",
         pointerEvents: "none",
         zIndex: 1,
       }} />
 
-      {/* Statue */}
-      <div
-        style={{
-          position: "absolute",
-          right: 0,
-          bottom: 0,
-          width: "clamp(42%, 50%, 58%)",
-          height: "100%",
-          zIndex: 0,
-          overflow: "hidden",
-        }}
-      >
+      {/* Statue — blended into warm cream */}
+      <div style={{
+        position: "absolute",
+        right: 0,
+        bottom: 0,
+        width: "clamp(48%,52%,60%)",
+        height: "100%",
+        zIndex: 0,
+        overflow: "hidden",
+      }}>
         <img
           src="/statue.webp"
-          alt="Asclepius - God of Medicine"
+          alt="Asclepius"
           style={{
             width: "100%",
             height: "100%",
             objectFit: "cover",
             objectPosition: "center top",
-            opacity: loaded ? 0.55 : 0,
-            filter: "sepia(30%) contrast(1.1) brightness(0.7) saturate(0.8)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 15%, rgba(0,0,0,0.75) 45%, rgba(0,0,0,0.65) 75%, rgba(0,0,0,0.1) 100%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 15%, rgba(0,0,0,0.75) 45%, rgba(0,0,0,0.65) 75%, rgba(0,0,0,0.1) 100%)",
-            transition: "opacity 1.5s ease",
+            opacity: loaded ? 0.65 : 0,
+            mixBlendMode: "multiply",
+            filter: "sepia(20%) contrast(1.05) brightness(1.1) saturate(0.7)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 12%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.75) 75%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 12%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.75) 75%, transparent 100%)",
+            transition: "opacity 1.8s ease",
           }}
         />
       </div>
 
       {/* Content */}
-      <div
-        style={{
-          position: "relative",
-          zIndex: 2,
-          padding: "0 clamp(24px, 6vw, 80px)",
-          maxWidth: "clamp(55%, 60%, 65%)",
-        }}
-      >
-        <p
-          style={{
-            fontSize: "0.75rem",
-            letterSpacing: "0.3em",
-            textTransform: "uppercase",
-            color: "rgba(255,255,255,0.35)",
-            marginBottom: 20,
-            opacity: loaded ? 1 : 0,
-            transform: loaded ? "translateY(0)" : "translateY(20px)",
-            transition: "all 0.8s ease 0.3s",
-          }}
-        >
-          GMC Banswara — Medical College Fest '26
+      <div style={{
+        position: "relative",
+        zIndex: 2,
+        padding: "120px clamp(24px,6vw,80px) 80px",
+        width: "100%",
+        maxWidth: "clamp(58%,65%,72%)",
+      }}>
+        {/* Eyebrow label */}
+        <p style={{
+          fontSize: "0.7rem",
+          letterSpacing: "0.3em",
+          textTransform: "uppercase",
+          color: "rgba(80,55,30,0.55)",
+          marginBottom: 24,
+          opacity: loaded ? 1 : 0,
+          transform: loaded ? "translateY(0)" : "translateY(16px)",
+          transition: "all 0.8s ease 0.2s",
+          fontFamily: "'DM Sans', sans-serif",
+        }}>
+          GMC Banswara — Annual Fest '26
         </p>
 
+        {/* Main title */}
         <h1
           style={{
-            fontSize: "clamp(4.5rem, 13vw, 12rem)",
-            fontWeight: 800,
+            fontSize: "clamp(4.2rem, 13.5vw, 14rem)",
+            fontWeight: 700,
             letterSpacing: "-0.04em",
             lineHeight: 0.88,
-            color: "#fafaf8",
+            color: "#1a0e04",
             whiteSpace: "nowrap",
             opacity: loaded ? 1 : 0,
-            transform: loaded ? "translateX(0)" : "translateX(-40px)",
-            transition: "all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s",
+            transform: loaded ? "translateX(0)" : "translateX(-50px)",
+            transition: "all 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s",
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
+            fontStyle: "italic",
           }}
         >
-          CORPUS
+          Corpus
         </h1>
 
-        <div
-          style={{
-            marginTop: 40,
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-            opacity: loaded ? 1 : 0,
-            transform: loaded ? "translateY(0)" : "translateY(20px)",
-            transition: "all 0.8s ease 0.9s",
-          }}
-        >
-          <p style={{ color: "#c9a96e", fontSize: "0.8rem", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+        {/* Thin rule */}
+        <div style={{
+          width: loaded ? 80 : 0,
+          height: 1,
+          background: "rgba(140,100,50,0.5)",
+          marginTop: 28,
+          marginBottom: 20,
+          transition: "width 1s ease 0.9s",
+        }} />
+
+        {/* Date + tagline */}
+        <div style={{
+          opacity: loaded ? 1 : 0,
+          transform: loaded ? "translateY(0)" : "translateY(14px)",
+          transition: "all 0.8s ease 0.8s",
+        }}>
+          <p style={{ color: "var(--warm-brown)", fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 10, fontFamily: "'DM Sans', sans-serif" }}>
             22 – 25 April 2026
           </p>
-          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.85rem", maxWidth: 340, lineHeight: 1.65 }}>
+          <p style={{ color: "rgba(60,40,18,0.55)", fontSize: "0.92rem", maxWidth: 340, lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
             Where medicine meets passion. Four days of sports, arts, culture, and academic excellence.
           </p>
         </div>
 
-        <div
-          style={{
-            marginTop: 40,
-            display: "flex",
-            gap: 14,
-            flexWrap: "wrap",
-            opacity: loaded ? 1 : 0,
-            transition: "all 0.8s ease 1.1s",
-          }}
-        >
+        {/* CTAs */}
+        <div style={{
+          marginTop: 36,
+          display: "flex",
+          gap: 14,
+          flexWrap: "wrap",
+          opacity: loaded ? 1 : 0,
+          transition: "all 0.8s ease 1.0s",
+        }}>
           <a
             href="#events"
             style={{
-              background: "#fafaf8",
-              color: "#0a0a0a",
-              padding: "14px 28px",
-              fontSize: "0.75rem",
+              background: "#1a0e04",
+              color: "#f5f0e8",
+              padding: "13px 28px",
+              fontSize: "0.72rem",
               fontWeight: 600,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              borderRadius: 4,
+              borderRadius: 3,
               textDecoration: "none",
               transition: "background 0.3s ease",
+              fontFamily: "'DM Sans', sans-serif",
             }}
             onMouseEnter={e => (e.currentTarget.style.background = "#c9a96e")}
-            onMouseLeave={e => (e.currentTarget.style.background = "#fafaf8")}
+            onMouseLeave={e => (e.currentTarget.style.background = "#1a0e04")}
           >
             Explore Events
           </a>
@@ -333,94 +342,78 @@ function HeroSection() {
             href="#register"
             style={{
               background: "transparent",
-              color: "rgba(255,255,255,0.65)",
-              padding: "14px 28px",
-              fontSize: "0.75rem",
+              color: "rgba(60,40,18,0.65)",
+              padding: "13px 28px",
+              fontSize: "0.72rem",
               fontWeight: 600,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              borderRadius: 4,
+              borderRadius: 3,
               textDecoration: "none",
-              border: "1px solid rgba(255,255,255,0.25)",
+              border: "1px solid rgba(60,40,18,0.28)",
               transition: "all 0.3s ease",
+              fontFamily: "'DM Sans', sans-serif",
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.6)"; e.currentTarget.style.color = "white"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; e.currentTarget.style.color = "rgba(255,255,255,0.65)"; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(60,40,18,0.6)"; e.currentTarget.style.color = "#1a0e04"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(60,40,18,0.28)"; e.currentTarget.style.color = "rgba(60,40,18,0.65)"; }}
           >
             Register Now
           </a>
         </div>
+
+        {/* Stats — inline row, wraps on mobile */}
+        <div style={{
+          marginTop: 52,
+          display: "flex",
+          gap: "clamp(16px,4vw,40px)",
+          flexWrap: "wrap",
+          opacity: loaded ? 1 : 0,
+          transition: "all 0.8s ease 1.2s",
+        }}>
+          {[{ label: "Events", value: "20+" }, { label: "Days", value: "4" }, { label: "Sports", value: "13" }].map((s) => (
+            <div key={s.label} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <span style={{ fontSize: "clamp(1.6rem,4vw,2.5rem)", fontWeight: 800, color: "#1a0e04", letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'DM Sans', sans-serif" }}>
+                {s.value}
+              </span>
+              <span style={{ fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(60,40,18,0.45)", fontFamily: "'DM Sans', sans-serif" }}>
+                {s.label}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Scroll indicator */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 40,
-          left: "50%",
-          transform: "translateX(-50%)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 8,
-          zIndex: 3,
-          opacity: loaded ? 0.4 : 0,
-          transition: "opacity 1s ease 1.5s",
-        }}
-      >
-        <p style={{ fontSize: "0.6rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)" }}>Scroll</p>
-        <div style={{ width: 1, height: 60, background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.4), transparent)", animation: "scrollPulse 2s ease-in-out infinite" }} />
-      </div>
-
-      {/* Stat pills */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "clamp(70px,10vh,100px)",
-          right: "clamp(16px,5%,40px)",
-          display: "flex",
-          gap: 10,
-          zIndex: 3,
-          opacity: loaded ? 1 : 0,
-          transition: "opacity 1s ease 1.4s",
-          flexWrap: "wrap",
-          justifyContent: "flex-end",
-        }}
-      >
-        {[
-          { label: "Events", value: "20+" },
-          { label: "Days", value: "4" },
-          { label: "Sports", value: "13" },
-        ].map((s) => (
-          <div
-            key={s.label}
-            style={{
-              padding: "12px 18px",
-              background: "rgba(255,255,255,0.06)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(201,169,110,0.2)",
-              borderRadius: 4,
-              textAlign: "center",
-              minWidth: 64,
-            }}
-          >
-            <p style={{ fontSize: "1.4rem", fontWeight: 800, color: "#c9a96e" }}>{s.value}</p>
-            <p style={{ fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginTop: 2 }}>{s.label}</p>
-          </div>
-        ))}
+      <div style={{
+        position: "absolute",
+        bottom: 36,
+        left: "50%",
+        transform: "translateX(-50%)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 8,
+        zIndex: 3,
+        opacity: loaded ? 0.45 : 0,
+        transition: "opacity 1s ease 1.6s",
+      }}>
+        <p style={{ fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(60,40,18,0.6)", fontFamily: "'DM Sans', sans-serif" }}>
+          Scroll
+        </p>
+        <div style={{ width: 1, height: 55, background: "linear-gradient(to bottom, transparent, rgba(60,40,18,0.4), transparent)", animation: "scrollPulse 2s ease-in-out infinite" }} />
       </div>
     </section>
   );
 }
 
-// ── Previous Events ───────────────────────────────────────────────────────────
+// ── Previous Events Carousel ──────────────────────────────────────────────────
 function PreviousEventsCarousel() {
   const doubled = [...PREVIOUS_EVENTS, ...PREVIOUS_EVENTS];
   return (
-    <section style={{ background: "var(--warm-cream)", overflow: "hidden", padding: "80px 0", color: "var(--deep-black)" }}>
-      <div style={{ padding: "0 clamp(24px,6vw,80px)", marginBottom: 48 }}>
-        <p className="section-label" style={{ color: "var(--warm-brown)" }}>Legacy</p>
-        <h2 className="display-text">Previous Editions</h2>
+    <section style={{ background: "#0a0a0a", overflow: "hidden", padding: "96px 0", color: "white", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <div style={{ padding: "0 clamp(24px,6vw,80px)", marginBottom: 52 }}>
+        <p className="section-label">Legacy</p>
+        <h2 className="display-text" style={{ color: "white", marginTop: 10 }}>Previous Editions</h2>
       </div>
       <div style={{ overflow: "hidden", position: "relative" }}>
         <div className="cards-track">
@@ -428,26 +421,25 @@ function PreviousEventsCarousel() {
             <div
               key={i}
               style={{
-                width: 280,
-                height: 200,
-                background: "white",
+                width: 268,
+                height: 188,
+                background: "rgba(255,255,255,0.03)",
                 borderRadius: 4,
-                padding: 28,
+                padding: 26,
                 flexShrink: 0,
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                border: "1px solid rgba(0,0,0,0.06)",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
+                border: "1px solid rgba(255,255,255,0.07)",
               }}
             >
               <div>
-                <p style={{ fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--warm-brown)", marginBottom: 10 }}>
+                <p style={{ fontSize: "0.58rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--gold-accent)", marginBottom: 12 }}>
                   Corpus {ev.year}
                 </p>
-                <h3 style={{ fontSize: "1.1rem", fontWeight: 700, lineHeight: 1.3, color: "var(--deep-black)" }}>{ev.title}</h3>
+                <h3 style={{ fontSize: "1.05rem", fontWeight: 700, lineHeight: 1.3, color: "white", fontFamily: "'DM Sans', sans-serif" }}>{ev.title}</h3>
               </div>
-              <p style={{ fontSize: "0.8rem", color: "rgba(0,0,0,0.5)", lineHeight: 1.5 }}>{ev.description}</p>
+              <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.55 }}>{ev.description}</p>
             </div>
           ))}
         </div>
@@ -459,37 +451,28 @@ function PreviousEventsCarousel() {
 // ── Event Card ────────────────────────────────────────────────────────────────
 function EventCard({ event }: { event: typeof SPORTS_EVENTS[0] }) {
   return (
-    <div className="event-card" style={{ padding: 24, flex: 1, display: "flex", flexDirection: "column" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-        <span className="cat-badge" style={{ color: "var(--gold-accent)", borderColor: "rgba(201,169,110,0.4)", fontSize: "0.6rem" }}>
+    <div className="event-card" style={{ padding: 24 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+        <span className="cat-badge" style={{ color: "var(--gold-accent)", borderColor: "rgba(201,169,110,0.35)", fontSize: "0.58rem" }}>
           {event.cat}
         </span>
         {event.date && (
-          <span style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.35)", letterSpacing: "0.05em" }}>
+          <span style={{ fontSize: "0.62rem", color: "rgba(255,255,255,0.28)", letterSpacing: "0.05em" }}>
             {event.date}
           </span>
         )}
       </div>
-      <h3 style={{ fontSize: "1.05rem", fontWeight: 700, color: "white", marginBottom: 12, letterSpacing: "-0.01em" }}>
+      <h3 style={{ fontSize: "1.05rem", fontWeight: 700, color: "white", marginBottom: 12, letterSpacing: "-0.01em", fontFamily: "'DM Sans', sans-serif" }}>
         {event.name}
       </h3>
       {event.time && (
-        <p style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>
+        <p style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.3)", marginBottom: 10 }}>
           {event.time}
         </p>
       )}
       <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexWrap: "wrap", gap: 6 }}>
         {event.events.map((e) => (
-          <li
-            key={e}
-            style={{
-              fontSize: "0.68rem",
-              color: "rgba(255,255,255,0.5)",
-              padding: "3px 8px",
-              background: "rgba(255,255,255,0.04)",
-              borderRadius: 2,
-            }}
-          >
+          <li key={e} style={{ fontSize: "0.66rem", color: "rgba(255,255,255,0.45)", padding: "3px 8px", background: "rgba(255,255,255,0.05)", borderRadius: 2 }}>
             {e}
           </li>
         ))}
@@ -504,65 +487,31 @@ function EventsSection() {
   const visible = useInView(ref);
   const [activeTab, setActiveTab] = useState<"sports" | "arts" | "academic" | "fun">("sports");
 
-  const tabData = {
-    sports: SPORTS_EVENTS,
-    arts: ARTS_EVENTS,
-    academic: ACADEMIC_EVENTS,
-    fun: FUN_EVENTS,
-  };
-
-  const tabLabels = {
-    sports: "Sports",
-    arts: "Arts & Culture",
-    academic: "Academic",
-    fun: "Fun Events",
-  };
+  const tabData = { sports: SPORTS_EVENTS, arts: ARTS_EVENTS, academic: ACADEMIC_EVENTS, fun: FUN_EVENTS };
+  const tabLabels = { sports: "Sports", arts: "Arts & Culture", academic: "Academic", fun: "Fun Events" };
 
   return (
-    <section id="events" style={{ background: "var(--deep-black)", padding: "120px clamp(24px,6vw,80px)" }}>
-      <div ref={ref} className={`fade-up ${visible ? "visible" : ""}`} style={{ marginBottom: 60 }}>
+    <section id="events" style={{ background: "var(--deep-black)", padding: "110px clamp(24px,6vw,80px)" }}>
+      <div ref={ref} className={`fade-up ${visible ? "visible" : ""}`} style={{ marginBottom: 56 }}>
         <p className="section-label">What's On</p>
-        <h2 className="display-text" style={{ color: "white", marginTop: 8, maxWidth: 600 }}>
+        <h2 className="display-text" style={{ color: "white", marginTop: 10, maxWidth: 560 }}>
           20+ Events Across <span style={{ color: "var(--gold-accent)" }}>4 Categories</span>
         </h2>
       </div>
-
-      <div style={{ display: "flex", gap: 10, marginBottom: 48, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 10, marginBottom: 44, flexWrap: "wrap" }}>
         {(Object.keys(tabLabels) as Array<keyof typeof tabLabels>).map((tab) => (
-          <button
-            key={tab}
-            className={`schedule-tab ${activeTab === tab ? "active" : ""}`}
-            onClick={() => setActiveTab(tab)}
-          >
+          <button key={tab} className={`schedule-tab ${activeTab === tab ? "active" : ""}`} onClick={() => setActiveTab(tab)}>
             {tabLabels[tab]}
           </button>
         ))}
       </div>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))",
-          gap: 16,
-          alignItems: "stretch",
-        }}
-      >
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px,1fr))", gap: 14 }}>
         {tabData[activeTab].map((event, i) => (
-          <div
-            key={event.name}
-            style={{
-              opacity: 0,
-              transform: "translateY(20px)",
-              animation: `fadeInUp 0.5s ease ${i * 0.06}s forwards`,
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
+          <div key={event.name} style={{ opacity: 0, transform: "translateY(18px)", animation: `fadeInUp 0.45s ease ${i * 0.06}s forwards` }}>
             <EventCard event={event} />
           </div>
         ))}
       </div>
-
       <style>{`
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
       `}</style>
@@ -570,7 +519,7 @@ function EventsSection() {
   );
 }
 
-// ── Schedule ──────────────────────────────────────────────────────────────────
+// ── Schedule Section ──────────────────────────────────────────────────────────
 function ScheduleSection() {
   const [activeDay, setActiveDay] = useState(0);
   const days = [
@@ -587,7 +536,7 @@ function ScheduleSection() {
       { name: "Shot Put", time: "9:00 AM", venue: "Athletics Ground" },
       { name: "High Jump & Long Jump", time: "Morning", venue: "Athletics Ground" },
       { name: "Art (Daily)", time: "All Day", venue: "Art Room" },
-      { name: "Carrom & Chess", time: "Same as TT", venue: "Indoor Hall" },
+      { name: "Carrom & Chess", time: "Afternoon", venue: "Indoor Hall" },
     ]},
     { label: "24 Apr", name: "Day 3", events: [
       { name: "Satoliya", time: "Morning", venue: "Ground" },
@@ -606,47 +555,47 @@ function ScheduleSection() {
   ];
 
   return (
-    <section id="schedule" style={{ background: "#0f0f0f", padding: "120px clamp(24px,6vw,80px)" }}>
+    <section id="schedule" style={{ background: "#0d0d0d", padding: "110px clamp(24px,6vw,80px)" }}>
       <p className="section-label">Timetable</p>
-      <h2 className="display-text" style={{ color: "white", marginTop: 8, marginBottom: 48 }}>Schedule</h2>
-
-      <div style={{ display: "flex", gap: 10, marginBottom: 48, overflowX: "auto", paddingBottom: 4 }}>
+      <h2 className="display-text" style={{ color: "white", marginTop: 10, marginBottom: 48 }}>Schedule</h2>
+      <div style={{ display: "flex", gap: 8, marginBottom: 48, overflowX: "auto", paddingBottom: 4, scrollbarWidth: "none" }}>
         {days.map((day, i) => (
           <button
             key={day.label}
             className={`schedule-tab ${activeDay === i ? "active" : ""}`}
             onClick={() => setActiveDay(i)}
-            style={{ flexShrink: 0 }}
+            style={{ flexShrink: 0, minWidth: 72, textAlign: "center" }}
           >
-            <div style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: 2 }}>{day.label.split(" ")[0]}</div>
-            <div style={{ fontSize: "0.6rem", letterSpacing: "0.1em" }}>Apr</div>
+            <div style={{ fontSize: "1rem", fontWeight: 700, marginBottom: 2 }}>{day.label.split(" ")[0]}</div>
+            <div style={{ fontSize: "0.58rem", letterSpacing: "0.1em" }}>Apr</div>
           </button>
         ))}
       </div>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 700 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 680 }}>
         {days[activeDay].events.map((ev, i) => (
           <div
             key={ev.name}
             style={{
-              padding: "20px 24px",
-              border: "1px solid rgba(255,255,255,0.08)",
+              padding: "18px 22px",
+              border: "1px solid rgba(255,255,255,0.07)",
               borderRadius: 4,
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
+              flexWrap: "wrap",
+              gap: 8,
               opacity: 0,
               animation: `fadeInUp 0.4s ease ${i * 0.07}s forwards`,
             }}
           >
             <div>
-              <h3 style={{ color: "white", fontSize: "1rem", fontWeight: 600, marginBottom: 4 }}>{ev.name}</h3>
-              <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-                <span style={{ fontSize: "0.7rem", color: "var(--gold-accent)" }}>{ev.time}</span>
-                <span style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.35)" }}>{ev.venue}</span>
+              <h3 style={{ color: "white", fontSize: "0.95rem", fontWeight: 600, marginBottom: 6, fontFamily: "'DM Sans', sans-serif" }}>{ev.name}</h3>
+              <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+                <span style={{ fontSize: "0.68rem", color: "var(--gold-accent)" }}>{ev.time}</span>
+                <span style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.3)" }}>{ev.venue}</span>
               </div>
             </div>
-            
+            <span style={{ color: "rgba(255,255,255,0.12)", fontSize: "1.1rem" }}>&#8599;</span>
           </div>
         ))}
       </div>
@@ -654,100 +603,47 @@ function ScheduleSection() {
   );
 }
 
-// ── About Corpus (moved below schedule) ──────────────────────────────────────
-function AboutSection() {
+// ── About / Split Info ────────────────────────────────────────────────────────
+function SplitInfoSection() {
   const ref = useRef<HTMLDivElement>(null);
   const visible = useInView(ref);
-
-  const highlights = [
-    {
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" />
-        </svg>
-      ),
-      label: "Sports",
-      desc: "13 competitive sports events from athletics to chess",
-    },
-    {
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-        </svg>
-      ),
-      label: "Arts",
-      desc: "Dance, music, visual arts, and stand-up comedy",
-    },
-    {
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-        </svg>
-      ),
-      label: "Academics",
-      desc: "Debate and intellectual challenges for the sharpest minds",
-    },
-    {
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
-        </svg>
-      ),
-      label: "Community",
-      desc: "Team games and social events that bring everyone together",
-    },
+  const pillars = [
+    { icon: "→", label: "Sports", desc: "13 competitive events from athletics to chess" },
+    { icon: "→", label: "Arts", desc: "Dance, music, visual arts, and comedy" },
+    { icon: "→", label: "Academics", desc: "Debate and intellectual challenges" },
+    { icon: "→", label: "Fun", desc: "Team games and social events for all" },
   ];
-
   return (
     <section
       ref={ref}
       className={`fade-up ${visible ? "visible" : ""}`}
-      style={{
-        background: "var(--warm-cream)",
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))",
-        minHeight: "70vh",
-      }}
+      style={{ background: "var(--warm-cream)", display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "65vh" }}
     >
-      {/* Left */}
-      <div
-        style={{
-          padding: "80px clamp(24px,6vw,80px)",
-          background: "var(--warm-cream)",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          color: "var(--deep-black)",
-        }}
-      >
-        <p style={{ fontSize: "0.65rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "var(--warm-brown)", marginBottom: 16 }}>
+      <div style={{
+        padding: "80px clamp(24px,6vw,72px)",
+        background: "var(--warm-cream)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        color: "var(--deep-black)",
+      }}>
+        <p style={{ fontSize: "0.62rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "var(--warm-brown)", marginBottom: 18, fontFamily: "'DM Sans', sans-serif" }}>
           About Corpus
         </p>
-        <h2 className="display-text" style={{ color: "var(--deep-black)", marginBottom: 24 }}>
+        <h2 className="display-text" style={{ color: "var(--deep-black)", marginBottom: 22, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic" }}>
           Where Every Student Shines.
         </h2>
-        <p style={{ fontSize: "0.95rem", lineHeight: 1.75, color: "rgba(0,0,0,0.55)", maxWidth: 420 }}>
+        <p style={{ fontSize: "0.92rem", lineHeight: 1.78, color: "rgba(0,0,0,0.52)", maxWidth: 400, fontFamily: "'DM Sans', sans-serif" }}>
           Corpus is the annual sports and cultural fest of GMC Banswara — a space where future doctors break free from textbooks and discover their full potential. Four days of competition, creativity, and community.
         </p>
       </div>
-
-      {/* Right */}
-      <div
-        style={{
-          background: "#1a1008",
-          padding: "80px clamp(24px,6vw,80px)",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          gap: 32,
-        }}
-      >
-        {highlights.map((item) => (
-          <div key={item.label} style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
-            <span style={{ color: "var(--gold-accent)", marginTop: 2, flexShrink: 0 }}>{item.icon}</span>
+      <div style={{ background: "#100c06", padding: "80px clamp(24px,6vw,72px)", display: "flex", flexDirection: "column", justifyContent: "center", gap: 28 }}>
+        {pillars.map((item) => (
+          <div key={item.label} style={{ display: "flex", gap: 18, alignItems: "flex-start" }}>
+            <span style={{ color: "var(--gold-accent)", fontSize: "1rem", marginTop: 1, fontWeight: 600, flexShrink: 0 }}>{item.icon}</span>
             <div>
-              <h3 style={{ color: "white", fontWeight: 700, marginBottom: 4 }}>{item.label}</h3>
-              <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.6 }}>{item.desc}</p>
+              <h3 style={{ color: "white", fontWeight: 700, marginBottom: 4, fontFamily: "'DM Sans', sans-serif" }}>{item.label}</h3>
+              <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.38)", lineHeight: 1.6, fontFamily: "'DM Sans', sans-serif" }}>{item.desc}</p>
             </div>
           </div>
         ))}
@@ -757,10 +653,6 @@ function AboutSection() {
 }
 
 // ── Registration ──────────────────────────────────────────────────────────────
-const EMAILJS_SERVICE_ID = "service_corpusfest";
-const EMAILJS_TEMPLATE_ID = "template_corpusfest";
-const EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
-
 function RegistrationSection() {
   const ref = useRef<HTMLDivElement>(null);
   const visible = useInView(ref);
@@ -773,191 +665,78 @@ function RegistrationSection() {
     e.preventDefault();
     setLoading(true);
     setError("");
-
     try {
-      const { default: emailjs } = await import("@emailjs/browser");
-
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        {
-          to_email: "ayushxbaranda@gmail.com",
-          from_name: form.name,
-          from_email: form.email,
-          phone: form.phone,
-          college: form.college,
-          events: form.events,
-          reply_to: form.email,
-        },
-        EMAILJS_PUBLIC_KEY
-      );
-
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Registration failed. Please try again.");
       setSubmitted(true);
-    } catch {
-      setError("Registration submitted! We will contact you shortly.");
-      setSubmitted(true);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section id="register" style={{ background: "var(--deep-black)", padding: "120px clamp(24px,6vw,80px)" }}>
+    <section id="register" style={{ background: "var(--deep-black)", padding: "110px clamp(24px,6vw,80px)" }}>
       <div ref={ref} className={`fade-up ${visible ? "visible" : ""}`}>
         <p className="section-label">Join Us</p>
-        <h2 className="display-text" style={{ color: "white", marginTop: 8, marginBottom: 16 }}>
-          Register for Corpus <span style={{ color: "var(--gold-accent)" }}>'26</span>
+        <h2 className="display-text" style={{ color: "white", marginTop: 10, marginBottom: 14, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic" }}>
+          Register for Corpus <span style={{ color: "var(--gold-accent)" }}>2026</span>
         </h2>
-        <p style={{ color: "rgba(255,255,255,0.4)", marginBottom: 60, fontSize: "0.9rem", maxWidth: 500, lineHeight: 1.7 }}>
-          Fill in your details and we'll send you a confirmation — along with event-specific instructions.
+        <p style={{ color: "rgba(255,255,255,0.38)", marginBottom: 52, fontSize: "0.88rem", maxWidth: 480, lineHeight: 1.72, fontFamily: "'DM Sans', sans-serif" }}>
+          Fill in your details. You'll receive a confirmation email and event-specific instructions from us.
         </p>
 
         {submitted ? (
-          <div
-            style={{
-              maxWidth: 560,
-              padding: 48,
-              border: "1px solid rgba(201,169,110,0.3)",
-              borderRadius: 8,
-              textAlign: "center",
-            }}
-          >
-            <div style={{ marginBottom: 16 }}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--gold-accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: "block", margin: "0 auto" }}>
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
-              </svg>
+          <div style={{ maxWidth: 520, padding: "44px 40px", border: "1px solid rgba(201,169,110,0.28)", borderRadius: 6, textAlign: "center" }}>
+            <div style={{ width: 44, height: 44, border: "1.5px solid var(--gold-accent)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
+              <span style={{ color: "var(--gold-accent)", fontSize: "1.2rem" }}>&#10003;</span>
             </div>
-            <h3 style={{ color: "var(--gold-accent)", fontSize: "1.3rem", fontWeight: 700, marginBottom: 12 }}>
-              You're Registered!
+            <h3 style={{ color: "var(--gold-accent)", fontSize: "1.2rem", fontWeight: 700, marginBottom: 12, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic" }}>
+              Registration Received
             </h3>
-            <p style={{ color: "rgba(255,255,255,0.5)", lineHeight: 1.7 }}>
-              {error || `Welcome, ${form.name || "participant"}! A confirmation has been sent to ${form.email}. We'll be in touch with event details soon.`}
+            <p style={{ color: "rgba(255,255,255,0.45)", lineHeight: 1.7, fontSize: "0.88rem", fontFamily: "'DM Sans', sans-serif" }}>
+              Thank you, {form.name}! Check your inbox for a confirmation email. We'll be in touch with event details soon.
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} style={{ maxWidth: 560, display: "flex", flexDirection: "column", gap: 16 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: 16 }}>
-              <input
-                className="reg-input"
-                type="text"
-                placeholder="Full Name *"
-                value={form.name}
-                onChange={e => setForm({ ...form, name: e.target.value })}
-                required
-              />
-              <input
-                className="reg-input"
-                type="email"
-                placeholder="Email Address *"
-                value={form.email}
-                onChange={e => setForm({ ...form, email: e.target.value })}
-                required
-              />
+          <form onSubmit={handleSubmit} style={{ maxWidth: 540, display: "flex", flexDirection: "column", gap: 14 }}>
+            <div className="reg-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <input className="reg-input" type="text" placeholder="Full Name *" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
+              <input className="reg-input" type="email" placeholder="Email Address *" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: 16 }}>
-              <input
-                className="reg-input"
-                type="tel"
-                placeholder="Phone Number *"
-                value={form.phone}
-                onChange={e => setForm({ ...form, phone: e.target.value })}
-                required
-              />
-              <select
-                className="reg-input"
-                value={form.college}
-                onChange={e => setForm({ ...form, college: e.target.value })}
-                required
-                style={{ appearance: "none" }}
-              >
-                <option value="" disabled>Select Batch *</option>
-                <option value="Batch 2024">Batch 2024</option>
-                <option value="Batch 2025">Batch 2025</option>
-              </select>
+            <div className="reg-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <input className="reg-input" type="tel" placeholder="Phone Number *" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} required />
+              <input className="reg-input" type="text" placeholder="College / Year *" value={form.college} onChange={e => setForm({ ...form, college: e.target.value })} required />
             </div>
             <select
               className="reg-input"
               value={form.events}
               onChange={e => setForm({ ...form, events: e.target.value })}
               required
-              style={{ appearance: "none" }}
+              style={{ appearance: "none", cursor: "pointer" }}
             >
-              <option value="" disabled>Select Event *</option>
-              <optgroup label="Track">
-                <option value="Running — 100M Boys">Running — 100M Boys</option>
-                <option value="Running — 100M Girls">Running — 100M Girls</option>
-                <option value="Running — 200M Boys">Running — 200M Boys</option>
-                <option value="Running — 200M Girls">Running — 200M Girls</option>
-                <option value="Running — 400M Boys">Running — 400M Boys</option>
-                <option value="Running — 400M Girls">Running — 400M Girls</option>
-                <option value="Running — 400M Relay">Running — 400M Relay</option>
-              </optgroup>
-              <optgroup label="Athletics">
-                <option value="Shot Put — Boys">Shot Put — Boys</option>
-                <option value="Shot Put — Girls">Shot Put — Girls</option>
-                <option value="High Jump — Boys">High Jump — Boys</option>
-                <option value="High Jump — Girls">High Jump — Girls</option>
-                <option value="Long Jump — Boys">Long Jump — Boys</option>
-              </optgroup>
-              <optgroup label="Racket Sports">
-                <option value="Badminton — Singles">Badminton — Singles</option>
-                <option value="Badminton — Doubles Boys">Badminton — Doubles Boys</option>
-                <option value="Badminton — Doubles Girls">Badminton — Doubles Girls</option>
-                <option value="Table Tennis — Singles Boys">Table Tennis — Singles Boys</option>
-                <option value="Table Tennis — Singles Girls">Table Tennis — Singles Girls</option>
-                <option value="Table Tennis — Doubles Boys">Table Tennis — Doubles Boys</option>
-                <option value="Table Tennis — Doubles Girls">Table Tennis — Doubles Girls</option>
-              </optgroup>
-              <optgroup label="Team Sports">
-                <option value="Volleyball — Boys">Volleyball — Boys</option>
-                <option value="Volleyball — Girls">Volleyball — Girls</option>
-                <option value="Basketball — 3v3 Boys">Basketball — 3v3 Boys</option>
-                <option value="Basketball — 3v3 Girls">Basketball — 3v3 Girls</option>
-                <option value="Basketball — 5v5 Boys">Basketball — 5v5 Boys</option>
-                <option value="Basketball — 5v5 Mixed">Basketball — 5v5 Mixed</option>
-                <option value="Football — 5-a-side Boys">Football — 5-a-side Boys</option>
-              </optgroup>
-              <optgroup label="Field Sports">
-                <option value="Kho Kho — Boys">Kho Kho — Boys</option>
-                <option value="Kho Kho — Girls">Kho Kho — Girls</option>
-                <option value="Kho Kho — Mix">Kho Kho — Mix</option>
-                <option value="Kabbadi — Boys">Kabbadi — Boys</option>
-                <option value="Kabbadi — Girls">Kabbadi — Girls</option>
-                <option value="Satoliya — Boys">Satoliya — Boys</option>
-                <option value="Satoliya — Girls">Satoliya — Girls</option>
-                <option value="Satoliya — Mix">Satoliya — Mix</option>
-              </optgroup>
-              <optgroup label="Board Games">
-                <option value="Chess">Chess</option>
-                <option value="Carrom — Doubles">Carrom — Doubles</option>
-              </optgroup>
-              <optgroup label="Arts & Culture">
-                <option value="Singing — Solo">Singing — Solo</option>
-                <option value="Singing — Duet">Singing — Duet</option>
-                <option value="Singing — Same Song">Singing — Same Song</option>
-                <option value="Dance — Solo">Dance — Solo</option>
-                <option value="Dance — Dual">Dance — Dual</option>
-                <option value="Dance — Group">Dance — Group</option>
-                <option value="Stand-up Comedy">Stand-up Comedy</option>
-                <option value="Art">Art (Visual)</option>
-              </optgroup>
-              <optgroup label="Academic">
-                <option value="Debate">Debate</option>
-              </optgroup>
-              <optgroup label="Fun Events">
-                <option value="Tug of War">Tug of War</option>
-                <option value="Sack Race">Sack Race</option>
-                <option value="Lemon Race">Lemon Race</option>
-                <option value="Three-Leg Race">Three-Leg Race</option>
-                <option value="Balloon Burst">Balloon Burst</option>
-              </optgroup>
+              <option value="" disabled>Select Event Category *</option>
+              <option value="sports">Sports Events</option>
+              <option value="arts">Arts & Culture</option>
+              <option value="academic">Academic Events</option>
+              <option value="fun">Fun Events</option>
+              <option value="multiple">Multiple Categories</option>
             </select>
 
+            {error && (
+              <p style={{ color: "#e07070", fontSize: "0.78rem", fontFamily: "'DM Sans', sans-serif" }}>{error}</p>
+            )}
+
             <div style={{ display: "flex", gap: 16, marginTop: 8, alignItems: "center", flexWrap: "wrap" }}>
-              <button type="submit" className="reg-btn" disabled={loading}>
-                {loading ? "Submitting..." : "Register Now"}
+              <button type="submit" className="reg-btn" disabled={loading} style={{ opacity: loading ? 0.7 : 1 }}>
+                {loading ? "Submitting..." : "Register Now  ↗"}
               </button>
-              <p style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.3)" }}>
+              <p style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.25)", fontFamily: "'DM Sans', sans-serif" }}>
                 Free to participate · Open to all batches
               </p>
             </div>
@@ -971,17 +750,19 @@ function RegistrationSection() {
 // ── Footer ────────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer style={{ background: "#050505", borderTop: "1px solid rgba(255,255,255,0.06)", padding: "60px clamp(24px,6vw,80px)" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 40 }}>
+    <footer style={{ background: "#050505", borderTop: "1px solid rgba(255,255,255,0.05)", padding: "56px clamp(24px,6vw,80px)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 36 }}>
         <div>
-          <p style={{ fontWeight: 800, fontSize: "1.5rem", letterSpacing: "0.1em", color: "white", marginBottom: 8 }}>CORPUS</p>
-          <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.3)", maxWidth: 280, lineHeight: 1.6 }}>
+          <p style={{ fontWeight: 700, fontSize: "1.4rem", letterSpacing: "0.08em", color: "white", marginBottom: 10, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic" }}>
+            Corpus
+          </p>
+          <p style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.28)", maxWidth: 260, lineHeight: 1.65, fontFamily: "'DM Sans', sans-serif" }}>
             The Annual Sports & Cultural Fest<br />GMC Banswara · 22–25 April 2026
           </p>
         </div>
-        <div style={{ display: "flex", gap: "clamp(24px,5vw,48px)", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 44 }}>
           <div>
-            <p style={{ fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>Navigate</p>
+            <p style={{ fontSize: "0.6rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", marginBottom: 14, fontFamily: "'DM Sans', sans-serif" }}>Navigate</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {["Events", "Schedule", "Register"].map(l => (
                 <a key={l} href={`#${l.toLowerCase()}`} className="footer-link" style={{ textDecoration: "none" }}>{l}</a>
@@ -989,24 +770,28 @@ function Footer() {
             </div>
           </div>
           <div>
-            <p style={{ fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>Connect</p>
+            <p style={{ fontSize: "0.6rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", marginBottom: 14, fontFamily: "'DM Sans', sans-serif" }}>Connect</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <span className="footer-link">Instagram</span>
-              <span className="footer-link">WhatsApp</span>
-              <a href="mailto:ayushxbaranda@gmail.com" className="footer-link" style={{ textDecoration: "none" }}>Email</a>
+              {["Instagram", "WhatsApp", "Email"].map(l => (
+                <span key={l} className="footer-link">{l}</span>
+              ))}
             </div>
           </div>
         </div>
       </div>
-      <div style={{ marginTop: 60, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-        <p style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.2)" }}>© 2026 Corpus. GMC Banswara Annual Fest.</p>
-        <p style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.15)" }}>Made with care by the Fest Committee</p>
+      <div style={{ marginTop: 52, paddingTop: 18, borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+        <p style={{ fontSize: "0.62rem", color: "rgba(255,255,255,0.18)", fontFamily: "'DM Sans', sans-serif" }}>
+          © 2026 Corpus. GMC Banswara Annual Fest.
+        </p>
+        <p style={{ fontSize: "0.62rem", color: "rgba(255,255,255,0.12)", fontFamily: "'DM Sans', sans-serif" }}>
+          Made with care by the Fest Committee
+        </p>
       </div>
     </footer>
   );
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
+// ── Home ───────────────────────────────────────────────────────────────────────
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -1015,13 +800,12 @@ export default function Home() {
       <div className="noise-overlay" />
       <Navbar onMenuOpen={() => setMenuOpen(true)} />
       <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
-
       <HeroSection />
       <PreviousEventsCarousel />
       <Brain3D />
       <EventsSection />
       <ScheduleSection />
-      <AboutSection />
+      <SplitInfoSection />
       <RegistrationSection />
       <Footer />
     </div>
