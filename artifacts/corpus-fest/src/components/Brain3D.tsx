@@ -163,6 +163,18 @@ function BrainModelScene({ activeRegion }: { activeRegion: number }) {
     const newBox = new THREE.Box3().setFromObject(cloned);
     const center = newBox.getCenter(new THREE.Vector3());
     cloned.position.sub(center);
+    // Override all materials with a warm visible anatomical color
+    cloned.traverse((node) => {
+      if ((node as THREE.Mesh).isMesh) {
+        const mesh = node as THREE.Mesh;
+        mesh.material = new THREE.MeshStandardMaterial({
+          color: new THREE.Color(0xd0a090),
+          roughness: 0.72,
+          metalness: 0.02,
+          envMapIntensity: 0.3,
+        });
+      }
+    });
     return cloned;
   }, [scene]);
 
@@ -184,12 +196,13 @@ function BrainModelScene({ activeRegion }: { activeRegion: number }) {
 
   return (
     <group ref={groupRef}>
-      <ambientLight intensity={0.65} color={0xfff8f0} />
-      <hemisphereLight args={[0xffe0d0, 0x3a1a10, 0.75]} />
-      <directionalLight position={[3, 5, 5]} intensity={2.8} color={0xfff0e8} castShadow />
-      <directionalLight position={[-4, 2, -3]} intensity={0.65} color={0x7080b0} />
-      <directionalLight position={[0, -3, 2]} intensity={0.35} color={0xffd8b8} />
-      <pointLight ref={glowRef} position={REGION_LIGHT_POS[0]} distance={10} decay={2} intensity={2.8} />
+      <ambientLight intensity={1.4} color={0xfff4ec} />
+      <hemisphereLight args={[0xffd8c8, 0x201008, 1.2]} />
+      <directionalLight position={[4, 6, 6]} intensity={3.5} color={0xfff0e8} />
+      <directionalLight position={[-5, 3, -4]} intensity={1.2} color={0xb0c0e0} />
+      <directionalLight position={[0, -4, 3]} intensity={0.8} color={0xffe0c0} />
+      <directionalLight position={[3, -2, 5]} intensity={1.0} color={0xffeedd} />
+      <pointLight ref={glowRef} position={REGION_LIGHT_POS[0]} distance={12} decay={1.5} intensity={4.0} />
       <primitive object={scaledScene} />
     </group>
   );
@@ -327,48 +340,21 @@ export default function Brain3D() {
           </div>
 
           <h2
-            key={activeRegion}
+            key={`tag-${activeRegion}`}
             style={{
               fontSize: "clamp(2rem,4.5vw,3.8rem)",
               fontWeight: 700,
               letterSpacing: "-0.03em",
               color: "white",
-              marginBottom: 6,
+              marginBottom: 24,
               lineHeight: 1.05,
               fontFamily: "'Cormorant Garamond', Georgia, serif",
               fontStyle: "italic",
               animation: "fadeSlideIn 0.5s ease both",
             }}
           >
-            {region.label}
-          </h2>
-          <p
-            key={`tag-${activeRegion}`}
-            style={{
-              fontSize: "0.75rem",
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              color: region.color,
-              marginBottom: 20,
-              fontFamily: "'DM Sans', sans-serif",
-              animation: "fadeSlideIn 0.5s ease 0.08s both",
-            }}
-          >
             {region.tagLine}
-          </p>
-          <p
-            key={`desc-${activeRegion}`}
-            style={{
-              fontSize: "0.88rem",
-              color: "rgba(255,255,255,0.38)",
-              marginBottom: 28,
-              fontFamily: "'DM Sans', sans-serif",
-              animation: "fadeSlideIn 0.5s ease 0.15s both",
-            }}
-          >
-            {region.desc}
-          </p>
-
+          </h2>
           <div
             key={`events-${activeRegion}`}
             style={{
@@ -382,14 +368,17 @@ export default function Brain3D() {
               <span
                 key={ev}
                 style={{
-                  padding: "5px 12px",
-                  border: `1px solid ${region.color}44`,
+                  padding: "7px 16px",
+                  border: `1px solid ${region.color}66`,
                   borderRadius: 2,
-                  fontSize: "0.68rem",
-                  color: "rgba(255,255,255,0.55)",
+                  fontSize: "0.75rem",
+                  fontWeight: 500,
+                  color: "rgba(255,255,255,0.82)",
                   fontFamily: "'DM Sans', sans-serif",
-                  letterSpacing: "0.04em",
-                  background: `${region.color}0d`,
+                  letterSpacing: "0.06em",
+                  background: `${region.color}18`,
+                  textTransform: "uppercase",
+                  transition: "all 0.3s ease",
                 }}
               >
                 {ev}

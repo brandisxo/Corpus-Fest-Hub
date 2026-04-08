@@ -200,27 +200,35 @@ function HeroSection() {
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
-        background: "linear-gradient(145deg, #e4dcd0 0%, #d9cfc0 45%, #cdc0ac 80%, #c1b09a 100%)",
+        background: "linear-gradient(145deg, #1a1208 0%, #130d05 50%, #0d0803 100%)",
       }}
     >
-      {/* Subtle warm vignette bottom */}
+      {/* Dark vignette left edge to blend text area */}
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        background: "linear-gradient(to right, rgba(10,6,2,0.92) 0%, rgba(10,6,2,0.6) 40%, rgba(10,6,2,0.1) 70%, transparent 100%)",
+        pointerEvents: "none",
+        zIndex: 1,
+      }} />
+      {/* Bottom fade */}
       <div style={{
         position: "absolute",
         bottom: 0,
         left: 0,
         right: 0,
-        height: "35%",
-        background: "linear-gradient(to top, rgba(210,192,168,0.5), transparent)",
+        height: "30%",
+        background: "linear-gradient(to top, rgba(8,5,1,0.85), transparent)",
         pointerEvents: "none",
         zIndex: 1,
       }} />
 
-      {/* Statue — blended into warm cream */}
+      {/* Statue — screen blend on dark bg makes it glow like marble */}
       <div style={{
         position: "absolute",
         right: 0,
         bottom: 0,
-        width: "clamp(48%,52%,60%)",
+        width: "clamp(52%,58%,66%)",
         height: "100%",
         zIndex: 0,
         overflow: "hidden",
@@ -233,15 +241,24 @@ function HeroSection() {
             height: "100%",
             objectFit: "cover",
             objectPosition: "center top",
-            opacity: loaded ? 0.65 : 0,
-            mixBlendMode: "multiply",
-            filter: "sepia(20%) contrast(1.05) brightness(1.1) saturate(0.7)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 12%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.75) 75%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 12%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.75) 75%, transparent 100%)",
+            opacity: loaded ? 0.55 : 0,
+            mixBlendMode: "screen",
+            filter: "sepia(30%) contrast(1.15) brightness(0.9) saturate(0.65)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 10%, rgba(0,0,0,0.85) 38%, rgba(0,0,0,0.8) 72%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 10%, rgba(0,0,0,0.85) 38%, rgba(0,0,0,0.8) 72%, transparent 100%)",
             transition: "opacity 1.8s ease",
           }}
         />
       </div>
+
+      {/* Gold grain overlay for texture */}
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        background: "radial-gradient(ellipse at 65% 50%, rgba(201,169,110,0.06) 0%, transparent 65%)",
+        pointerEvents: "none",
+        zIndex: 0,
+      }} />
 
       {/* Content */}
       <div style={{
@@ -256,7 +273,7 @@ function HeroSection() {
           fontSize: "0.7rem",
           letterSpacing: "0.3em",
           textTransform: "uppercase",
-          color: "rgba(80,55,30,0.55)",
+          color: "rgba(201,169,110,0.7)",
           marginBottom: 24,
           opacity: loaded ? 1 : 0,
           transform: loaded ? "translateY(0)" : "translateY(16px)",
@@ -273,7 +290,7 @@ function HeroSection() {
             fontWeight: 700,
             letterSpacing: "-0.04em",
             lineHeight: 0.88,
-            color: "#1a0e04",
+            color: "#f0e8d8",
             whiteSpace: "nowrap",
             opacity: loaded ? 1 : 0,
             transform: loaded ? "translateX(0)" : "translateX(-50px)",
@@ -289,7 +306,7 @@ function HeroSection() {
         <div style={{
           width: loaded ? 80 : 0,
           height: 1,
-          background: "rgba(140,100,50,0.5)",
+          background: "rgba(201,169,110,0.5)",
           marginTop: 28,
           marginBottom: 20,
           transition: "width 1s ease 0.9s",
@@ -301,10 +318,10 @@ function HeroSection() {
           transform: loaded ? "translateY(0)" : "translateY(14px)",
           transition: "all 0.8s ease 0.8s",
         }}>
-          <p style={{ color: "var(--warm-brown)", fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 10, fontFamily: "'DM Sans', sans-serif" }}>
+          <p style={{ color: "var(--gold-accent)", fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 10, fontFamily: "'DM Sans', sans-serif" }}>
             22 – 25 April 2026
           </p>
-          <p style={{ color: "rgba(60,40,18,0.55)", fontSize: "0.92rem", maxWidth: 340, lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
+          <p style={{ color: "rgba(240,220,190,0.5)", fontSize: "0.92rem", maxWidth: 340, lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
             Where medicine meets passion. Four days of sports, arts, culture, and academic excellence.
           </p>
         </div>
@@ -321,8 +338,8 @@ function HeroSection() {
           <a
             href="#events"
             style={{
-              background: "#1a0e04",
-              color: "#f5f0e8",
+              background: "#f0e8d8",
+              color: "#0d0803",
               padding: "13px 28px",
               fontSize: "0.72rem",
               fontWeight: 600,
@@ -330,11 +347,11 @@ function HeroSection() {
               textTransform: "uppercase",
               borderRadius: 3,
               textDecoration: "none",
-              transition: "background 0.3s ease",
+              transition: "background 0.3s ease, color 0.3s ease",
               fontFamily: "'DM Sans', sans-serif",
             }}
-            onMouseEnter={e => (e.currentTarget.style.background = "#c9a96e")}
-            onMouseLeave={e => (e.currentTarget.style.background = "#1a0e04")}
+            onMouseEnter={e => { e.currentTarget.style.background = "#c9a96e"; e.currentTarget.style.color = "#0d0803"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "#f0e8d8"; e.currentTarget.style.color = "#0d0803"; }}
           >
             Explore Events
           </a>
@@ -342,7 +359,7 @@ function HeroSection() {
             href="#register"
             style={{
               background: "transparent",
-              color: "rgba(60,40,18,0.65)",
+              color: "rgba(240,220,190,0.65)",
               padding: "13px 28px",
               fontSize: "0.72rem",
               fontWeight: 600,
@@ -350,18 +367,18 @@ function HeroSection() {
               textTransform: "uppercase",
               borderRadius: 3,
               textDecoration: "none",
-              border: "1px solid rgba(60,40,18,0.28)",
+              border: "1px solid rgba(240,220,190,0.25)",
               transition: "all 0.3s ease",
               fontFamily: "'DM Sans', sans-serif",
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(60,40,18,0.6)"; e.currentTarget.style.color = "#1a0e04"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(60,40,18,0.28)"; e.currentTarget.style.color = "rgba(60,40,18,0.65)"; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(201,169,110,0.7)"; e.currentTarget.style.color = "#c9a96e"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(240,220,190,0.25)"; e.currentTarget.style.color = "rgba(240,220,190,0.65)"; }}
           >
             Register Now
           </a>
         </div>
 
-        {/* Stats — inline row, wraps on mobile */}
+        {/* Stats */}
         <div style={{
           marginTop: 52,
           display: "flex",
@@ -372,10 +389,10 @@ function HeroSection() {
         }}>
           {[{ label: "Events", value: "20+" }, { label: "Days", value: "4" }, { label: "Sports", value: "13" }].map((s) => (
             <div key={s.label} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <span style={{ fontSize: "clamp(1.6rem,4vw,2.5rem)", fontWeight: 800, color: "#1a0e04", letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'DM Sans', sans-serif" }}>
+              <span style={{ fontSize: "clamp(1.6rem,4vw,2.5rem)", fontWeight: 800, color: "#f0e8d8", letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'DM Sans', sans-serif" }}>
                 {s.value}
               </span>
-              <span style={{ fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(60,40,18,0.45)", fontFamily: "'DM Sans', sans-serif" }}>
+              <span style={{ fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(240,220,190,0.3)", fontFamily: "'DM Sans', sans-serif" }}>
                 {s.label}
               </span>
             </div>
@@ -397,10 +414,10 @@ function HeroSection() {
         opacity: loaded ? 0.45 : 0,
         transition: "opacity 1s ease 1.6s",
       }}>
-        <p style={{ fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(60,40,18,0.6)", fontFamily: "'DM Sans', sans-serif" }}>
+        <p style={{ fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(201,169,110,0.6)", fontFamily: "'DM Sans', sans-serif" }}>
           Scroll
         </p>
-        <div style={{ width: 1, height: 55, background: "linear-gradient(to bottom, transparent, rgba(60,40,18,0.4), transparent)", animation: "scrollPulse 2s ease-in-out infinite" }} />
+        <div style={{ width: 1, height: 55, background: "linear-gradient(to bottom, transparent, rgba(201,169,110,0.5), transparent)", animation: "scrollPulse 2s ease-in-out infinite" }} />
       </div>
     </section>
   );
