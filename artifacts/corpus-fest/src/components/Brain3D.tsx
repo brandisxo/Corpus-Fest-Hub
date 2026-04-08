@@ -415,11 +415,34 @@ const REGION_SURFACE_POS: [number, number, number][] = [
   [0.22, -0.42, 0.95],  // Temporal         — front bottom center
 ];
 
+// Build a soft radial-gradient texture so sprites look like circular glows, not squares
+function makeGlowTexture(): THREE.CanvasTexture {
+  const size = 128;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+  const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  grad.addColorStop(0.00, "rgba(255,255,255,1.0)");
+  grad.addColorStop(0.25, "rgba(255,255,255,0.75)");
+  grad.addColorStop(0.55, "rgba(255,255,255,0.25)");
+  grad.addColorStop(0.80, "rgba(255,255,255,0.05)");
+  grad.addColorStop(1.00, "rgba(255,255,255,0.00)");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, size, size);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
+}
+
 function RegionGlowSprites({ activeRegion }: { activeRegion: number }) {
   const innerRef = useRef<THREE.Sprite>(null);
   const midRef   = useRef<THREE.Sprite>(null);
   const outerRef = useRef<THREE.Sprite>(null);
   const arRef    = useRef(activeRegion);
+
+  // Shared radial gradient texture — prevents square glow artefacts
+  const glowTex = useMemo(() => makeGlowTexture(), []);
 
   useEffect(() => { arRef.current = activeRegion; }, [activeRegion]);
 
@@ -455,9 +478,10 @@ function RegionGlowSprites({ activeRegion }: { activeRegion: number }) {
 
   return (
     <>
-      {/* Bright hot core */}
+      {/* Bright hot core — radial texture = circular, never a square */}
       <sprite ref={innerRef} position={REGION_SURFACE_POS[0]} scale={[0.55, 0.55, 1]}>
         <spriteMaterial
+          map={glowTex}
           color={REGIONS[activeRegion].hex}
           transparent
           opacity={0.9}
@@ -468,6 +492,7 @@ function RegionGlowSprites({ activeRegion }: { activeRegion: number }) {
       {/* Mid glow ring */}
       <sprite ref={midRef} position={REGION_SURFACE_POS[0]} scale={[1.1, 1.1, 1]}>
         <spriteMaterial
+          map={glowTex}
           color={REGIONS[activeRegion].hex}
           transparent
           opacity={0.5}
@@ -478,6 +503,7 @@ function RegionGlowSprites({ activeRegion }: { activeRegion: number }) {
       {/* Outer ambient bloom */}
       <sprite ref={outerRef} position={REGION_SURFACE_POS[0]} scale={[2.0, 2.0, 1]}>
         <spriteMaterial
+          map={glowTex}
           color={REGIONS[activeRegion].hex}
           transparent
           opacity={0.22}
