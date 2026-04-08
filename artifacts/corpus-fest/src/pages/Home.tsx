@@ -178,7 +178,6 @@ function MenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
             onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.18)")}
           >
             {item.label}
-            <span style={{ fontSize: "1.5rem", opacity: 0.4 }}>&#8599;</span>
           </a>
         ))}
       </div>
@@ -200,14 +199,14 @@ function HeroSection() {
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
-        background: "linear-gradient(145deg, #1a1208 0%, #130d05 50%, #0d0803 100%)",
+        background: "linear-gradient(150deg, #1a1612 0%, #13100c 45%, #0d0a08 100%)",
       }}
     >
-      {/* Dark vignette left edge to blend text area */}
+      {/* Left text-area shadow — keeps text legible */}
       <div style={{
         position: "absolute",
         inset: 0,
-        background: "linear-gradient(to right, rgba(10,6,2,0.92) 0%, rgba(10,6,2,0.6) 40%, rgba(10,6,2,0.1) 70%, transparent 100%)",
+        background: "linear-gradient(to right, rgba(20,14,10,0.96) 0%, rgba(20,14,10,0.72) 35%, rgba(20,14,10,0.18) 62%, transparent 100%)",
         pointerEvents: "none",
         zIndex: 1,
       }} />
@@ -217,13 +216,35 @@ function HeroSection() {
         bottom: 0,
         left: 0,
         right: 0,
-        height: "30%",
-        background: "linear-gradient(to top, rgba(8,5,1,0.85), transparent)",
+        height: "32%",
+        background: "linear-gradient(to top, rgba(13,10,8,0.92), transparent)",
         pointerEvents: "none",
         zIndex: 1,
       }} />
+      {/* Right-side vignette — darkens statue's right edge, anchors it */}
+      <div style={{
+        position: "absolute",
+        right: 0,
+        top: 0,
+        bottom: 0,
+        width: "22%",
+        background: "linear-gradient(to right, transparent, rgba(10,8,6,0.85))",
+        pointerEvents: "none",
+        zIndex: 2,
+      }} />
+      {/* Bottom-right vignette — sculptural anchor */}
+      <div style={{
+        position: "absolute",
+        right: 0,
+        bottom: 0,
+        width: "48%",
+        height: "40%",
+        background: "radial-gradient(ellipse at 80% 90%, rgba(8,6,4,0.75) 0%, transparent 70%)",
+        pointerEvents: "none",
+        zIndex: 2,
+      }} />
 
-      {/* Statue — screen blend on dark bg makes it glow like marble */}
+      {/* Statue — museum spotlight treatment */}
       <div style={{
         position: "absolute",
         right: 0,
@@ -241,15 +262,27 @@ function HeroSection() {
             height: "100%",
             objectFit: "cover",
             objectPosition: "center top",
-            opacity: loaded ? 0.55 : 0,
+            opacity: loaded ? 1 : 0,
             mixBlendMode: "screen",
-            filter: "sepia(30%) contrast(1.15) brightness(0.9) saturate(0.65)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 10%, rgba(0,0,0,0.85) 38%, rgba(0,0,0,0.8) 72%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 10%, rgba(0,0,0,0.85) 38%, rgba(0,0,0,0.8) 72%, transparent 100%)",
+            // Museum spotlight: warm limestone tone, upper-left directional
+            filter: "sepia(18%) contrast(1.22) brightness(1.18) saturate(0.72)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 8%, rgba(0,0,0,0.92) 30%, rgba(0,0,0,0.88) 68%, rgba(0,0,0,0.3) 88%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 8%, rgba(0,0,0,0.92) 30%, rgba(0,0,0,0.88) 68%, rgba(0,0,0,0.3) 88%, transparent 100%)",
             transition: "opacity 1.8s ease",
           }}
         />
       </div>
+      {/* Upper-left rim light on statue */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        left: "30%",
+        width: "40%",
+        height: "60%",
+        background: "radial-gradient(ellipse at 30% 15%, rgba(210,185,145,0.06) 0%, transparent 65%)",
+        pointerEvents: "none",
+        zIndex: 1,
+      }} />
 
       {/* Gold grain overlay for texture */}
       <div style={{
@@ -290,13 +323,14 @@ function HeroSection() {
             fontWeight: 700,
             letterSpacing: "-0.04em",
             lineHeight: 0.88,
-            color: "#f0e8d8",
+            color: "#ffffff",
             whiteSpace: "nowrap",
             opacity: loaded ? 1 : 0,
             transform: loaded ? "translateX(0)" : "translateX(-50px)",
             transition: "all 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s",
             fontFamily: "'Cormorant Garamond', Georgia, serif",
             fontStyle: "italic",
+            textShadow: "0 2px 24px rgba(210,180,130,0.18), 0 1px 3px rgba(0,0,0,0.5)",
           }}
         >
           Corpus
@@ -321,7 +355,7 @@ function HeroSection() {
           <p style={{ color: "var(--gold-accent)", fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 10, fontFamily: "'DM Sans', sans-serif" }}>
             22 – 25 April 2026
           </p>
-          <p style={{ color: "rgba(240,220,190,0.5)", fontSize: "0.92rem", maxWidth: 340, lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
+          <p style={{ color: "rgba(232,227,219,0.68)", fontSize: "0.92rem", maxWidth: 340, lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
             Where medicine meets passion. Four days of sports, arts, culture, and academic excellence.
           </p>
         </div>
@@ -389,10 +423,10 @@ function HeroSection() {
         }}>
           {[{ label: "Events", value: "20+" }, { label: "Days", value: "4" }, { label: "Sports", value: "13" }].map((s) => (
             <div key={s.label} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <span style={{ fontSize: "clamp(1.6rem,4vw,2.5rem)", fontWeight: 800, color: "#f0e8d8", letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'DM Sans', sans-serif" }}>
+              <span style={{ fontSize: "clamp(1.6rem,4vw,2.5rem)", fontWeight: 800, color: "#d4af78", letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'DM Sans', sans-serif" }}>
                 {s.value}
               </span>
-              <span style={{ fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(240,220,190,0.3)", fontFamily: "'DM Sans', sans-serif" }}>
+              <span style={{ fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(232,218,190,0.35)", fontFamily: "'DM Sans', sans-serif" }}>
                 {s.label}
               </span>
             </div>
