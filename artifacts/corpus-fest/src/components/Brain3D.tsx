@@ -440,32 +440,25 @@ function BrainModelScene({ activeRegion }: { activeRegion: number }) {
     if (glowRef.current) {
       glowRef.current.position.lerp(target, 0.05);
       glowRef.current.color.set(REGIONS[ar].hex);
-      glowRef.current.intensity = 10.0 + 7.0 * Math.sin(t * 3.5) * Math.sin(t * 1.3);
+      glowRef.current.intensity = 12.0 + 8.0 * Math.sin(t * 3.5) * Math.sin(t * 1.3);
     }
     if (glowRef2.current) {
       const t2 = new THREE.Vector3(...REGION_LIGHT_POS[ar]).multiplyScalar(-0.6);
       glowRef2.current.position.lerp(t2, 0.04);
       glowRef2.current.color.set(REGIONS[ar].hex);
-      glowRef2.current.intensity = 6.0 + 4.0 * Math.sin(t * 4.2 + 1.5);
+      glowRef2.current.intensity = 7.0 + 4.0 * Math.sin(t * 4.2 + 1.5);
     }
-    // Update emissive intensity on all meshes
-    scaledScene.traverse((node) => {
-      if ((node as THREE.Mesh).isMesh) {
-        const mat = (node as THREE.Mesh).material as THREE.MeshStandardMaterial;
-        mat.emissive.set(REGIONS[ar].hex);
-        mat.emissiveIntensity = 0.35 + 0.45 * (0.5 + 0.5 * Math.sin(t * 3.0));
-      }
-    });
   });
 
   return (
     <group ref={groupRef}>
-      <ambientLight intensity={0.8} color={0xfff4ec} />
-      <hemisphereLight args={[0xffd8c8, 0x100806, 0.8]} />
-      <directionalLight position={[3, 5, 5]} intensity={2.5} color={0xfff0e8} />
-      <directionalLight position={[-4, 2, -3]} intensity={0.8} color={0xb0a0c0} />
-      <pointLight ref={glowRef} position={REGION_LIGHT_POS[0]} distance={8} decay={1.2} intensity={6.0} />
-      <pointLight ref={glowRef2} position={[-0.8, -1.5, 1.0]} distance={6} decay={1.5} intensity={3.0} />
+      <ambientLight intensity={0.6} color={0xfff4ec} />
+      <hemisphereLight args={[0xffd8c8, 0x100806, 0.5]} />
+      <directionalLight position={[3, 5, 5]} intensity={1.8} color={0xfff0e8} />
+      <directionalLight position={[-4, 2, -3]} intensity={0.5} color={0xb0a0c0} />
+      {/* Tight-range point lights so only the active region glows */}
+      <pointLight ref={glowRef} position={REGION_LIGHT_POS[0]} distance={2.8} decay={2.5} intensity={6.0} />
+      <pointLight ref={glowRef2} position={[-0.8, -1.5, 1.0]} distance={2.2} decay={2.8} intensity={3.0} />
       <primitive object={scaledScene} />
     </group>
   );
@@ -489,8 +482,6 @@ export default function Brain3D() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const activeRef = useRef(0);
   const [webglOk] = useState(() => isWebGLAvailable());
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-
   useEffect(() => {
     const onScroll = () => {
       const section = document.getElementById("brain-section");
@@ -510,7 +501,7 @@ export default function Brain3D() {
 
   const region = REGIONS[activeRegion];
 
-  const brainVisual = (!isMobile && webglOk) ? (
+  const brainVisual = (webglOk) ? (
     <CanvasBoundary fallback={<SVGBrain active={activeRegion} />}>
       <Canvas
         camera={{ position: [0, 0.1, 3.8], fov: 42 }}

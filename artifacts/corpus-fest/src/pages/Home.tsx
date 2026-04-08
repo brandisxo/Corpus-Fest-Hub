@@ -202,11 +202,20 @@ function HeroSection() {
         background: "#000000",
       }}
     >
-      {/* Left guard — ensures text is legible over any statue bleed */}
+      {/* Warm amber atmosphere — the statue's background colour radiates across the whole page */}
       <div style={{
         position: "absolute",
         inset: 0,
-        background: "linear-gradient(to right, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.35) 55%, transparent 72%)",
+        background: "radial-gradient(ellipse 88% 110% at 74% 48%, rgba(170,108,48,0.42) 0%, rgba(135,82,32,0.24) 32%, rgba(95,58,20,0.12) 54%, transparent 70%)",
+        pointerEvents: "none",
+        zIndex: 0,
+      }} />
+
+      {/* Left guard — ensures text is legible */}
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        background: "linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 28%, rgba(0,0,0,0.22) 52%, transparent 68%)",
         pointerEvents: "none",
         zIndex: 1,
       }} />
@@ -231,50 +240,32 @@ function HeroSection() {
             objectPosition: "center top",
             opacity: loaded ? 1 : 0,
             mixBlendMode: "screen",
-            filter: "contrast(1.25) brightness(0.92) saturate(0.58) sepia(8%)",
-            maskImage: [
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 14%, black 32%, black 58%, rgba(0,0,0,0.45) 78%, transparent 94%)",
-              "linear-gradient(to bottom, transparent 0%, black 10%, black 68%, rgba(0,0,0,0.2) 84%, transparent 100%)",
-            ].join(", "),
-            WebkitMaskImage: [
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 14%, black 32%, black 58%, rgba(0,0,0,0.45) 78%, transparent 94%)",
-              "linear-gradient(to bottom, transparent 0%, black 10%, black 68%, rgba(0,0,0,0.2) 84%, transparent 100%)",
-            ].join(", "),
-            maskComposite: "intersect",
-            WebkitMaskComposite: "source-in",
+            filter: "contrast(1.3) brightness(1.05) saturate(0.62) sepia(10%)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 10%, rgba(0,0,0,1) 28%, rgba(0,0,0,1) 64%, rgba(0,0,0,0.4) 82%, transparent 96%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 10%, rgba(0,0,0,1) 28%, rgba(0,0,0,1) 64%, rgba(0,0,0,0.4) 82%, transparent 96%)",
             transition: "opacity 1.8s ease",
           }}
         />
-        {/* Golden rim light on statue's left edge (facing the text) */}
+        {/* Golden rim light on statue's left edge */}
         <div style={{
           position: "absolute",
           top: "5%",
           bottom: "5%",
           left: 0,
           width: "10%",
-          background: "linear-gradient(to right, rgba(212,175,120,0.32), rgba(212,175,120,0.08) 55%, transparent)",
+          background: "linear-gradient(to right, rgba(212,175,120,0.38), rgba(212,175,120,0.12) 55%, transparent)",
           filter: "blur(10px)",
           mixBlendMode: "screen",
           pointerEvents: "none",
         }} />
-        {/* Top vignette — fade from top edge into black */}
-        <div style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "22%",
-          background: "linear-gradient(to bottom, #000000 0%, rgba(0,0,0,0.6) 50%, transparent 100%)",
-          pointerEvents: "none",
-        }} />
-        {/* Bottom anchor vignette — extended to cover knee area */}
+        {/* Bottom vignette — tones down knee area */}
         <div style={{
           position: "absolute",
           bottom: 0,
           left: 0,
           right: 0,
-          height: "52%",
-          background: "linear-gradient(to top, #000000 0%, #000000 18%, rgba(0,0,0,0.75) 42%, rgba(0,0,0,0.3) 70%, transparent 100%)",
+          height: "40%",
+          background: "linear-gradient(to top, #000000 0%, rgba(0,0,0,0.6) 40%, transparent 100%)",
           pointerEvents: "none",
         }} />
         {/* Right-edge sink into black */}
@@ -283,8 +274,8 @@ function HeroSection() {
           top: 0,
           right: 0,
           bottom: 0,
-          width: "26%",
-          background: "linear-gradient(to right, transparent, rgba(0,0,0,0.7) 55%, #000000)",
+          width: "20%",
+          background: "linear-gradient(to right, transparent, #000000)",
           pointerEvents: "none",
         }} />
       </div>
