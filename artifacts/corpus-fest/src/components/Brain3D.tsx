@@ -156,9 +156,10 @@ function SVGBrain({ active }: { active: number }) {
             <stop offset="100%" stopColor="#906050" />
           </radialGradient>
           {/* Pulsing radial glow at active region center */}
-          <radialGradient id="activeGlow" cx={c.x} cy={c.y} r="130" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor={region.color} stopOpacity="0.9" />
-            <stop offset="40%" stopColor={region.color} stopOpacity="0.4" />
+          <radialGradient id="activeGlow" cx={c.x} cy={c.y} r="160" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor={region.color} stopOpacity="1.0" />
+            <stop offset="30%" stopColor={region.color} stopOpacity="0.65" />
+            <stop offset="65%" stopColor={region.color} stopOpacity="0.25" />
             <stop offset="100%" stopColor={region.color} stopOpacity="0" />
           </radialGradient>
           <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
@@ -166,11 +167,15 @@ function SVGBrain({ active }: { active: number }) {
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
           <filter id="strongGlow" x="-80%" y="-80%" width="260%" height="260%">
-            <feGaussianBlur stdDeviation="14" result="blur" />
+            <feGaussianBlur stdDeviation="18" result="blur" />
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
-          <filter id="sparkGlow" x="-200%" y="-200%" width="500%" height="500%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
+          <filter id="sparkGlow" x="-300%" y="-300%" width="700%" height="700%">
+            <feGaussianBlur stdDeviation="9" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <filter id="broadGlow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="28" result="blur" />
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
         </defs>
@@ -217,14 +222,28 @@ function SVGBrain({ active }: { active: number }) {
         })}
 
         {/* ── Region highlight fills ─────────────────────────────────────── */}
+        {/* Broad ambient light layer behind the active region */}
         {REGIONS.map((r, i) => (
           <path
-            key={i}
+            key={`ambient-${i}`}
             d={regionFillPaths[i]}
-            fill={i === active ? `${r.color}` : "transparent"}
-            fillOpacity={i === active ? 0.22 : 0}
+            fill={i === active ? r.color : "transparent"}
+            fillOpacity={i === active ? 0.18 : 0}
+            filter={i === active ? "url(#broadGlow)" : undefined}
+            style={{ transition: "all 0.7s ease" }}
+          />
+        ))}
+        {/* Crisp region boundary fill */}
+        {REGIONS.map((r, i) => (
+          <path
+            key={`fill-${i}`}
+            d={regionFillPaths[i]}
+            fill={i === active ? r.color : "transparent"}
+            fillOpacity={i === active ? 0.48 : 0}
             stroke={i === active ? r.color : "transparent"}
-            strokeWidth={i === active ? 2 : 0}
+            strokeWidth={i === active ? 2.5 : 0}
+            strokeOpacity={i === active ? 0.85 : 0}
+            filter={i === active ? "url(#softGlow)" : undefined}
             style={{ transition: "all 0.7s ease" }}
           />
         ))}
@@ -240,80 +259,128 @@ function SVGBrain({ active }: { active: number }) {
         {/* ── Neural impulse paths (visible traces) ─────────────────────── */}
         {NEURAL_PATHS[active].map((d, pi) => (
           <g key={`path-${active}-${pi}`}>
-            {/* Faint path trace */}
+            {/* Glow halo under trace */}
             <path
               d={d}
               fill="none"
               stroke={region.color}
-              strokeWidth="1.5"
-              strokeOpacity="0.35"
+              strokeWidth="6"
+              strokeOpacity="0.22"
+              strokeLinecap="round"
+              filter="url(#sparkGlow)"
+            />
+            {/* Visible path trace */}
+            <path
+              d={d}
+              fill="none"
+              stroke={region.color}
+              strokeWidth="2"
+              strokeOpacity="0.72"
               strokeLinecap="round"
             />
-            {/* Traveling impulse dot — staggered */}
-            <circle r="4" fill={region.color} filter="url(#sparkGlow)" opacity="0.95">
+            {/* Traveling impulse dot — main */}
+            <circle r="7" fill={region.color} filter="url(#sparkGlow)" opacity="1.0">
               <animateMotion
-                dur="1.4s"
+                dur="1.2s"
                 repeatCount="indefinite"
-                begin={`${pi * 0.35}s`}
+                begin={`${pi * 0.3}s`}
                 path={d}
                 rotate="auto"
               />
-              <animate attributeName="opacity" values="0;0.95;0.95;0" dur="1.4s" begin={`${pi * 0.35}s`} repeatCount="indefinite" />
+              <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" begin={`${pi * 0.3}s`} repeatCount="indefinite" />
             </circle>
-            {/* Secondary smaller dot (echo) */}
-            <circle r="2.5" fill="white" opacity="0.7">
+            {/* Bright white core dot */}
+            <circle r="3.5" fill="white" opacity="1.0">
               <animateMotion
-                dur="1.4s"
+                dur="1.2s"
                 repeatCount="indefinite"
-                begin={`${pi * 0.35 + 0.1}s`}
+                begin={`${pi * 0.3}s`}
                 path={d}
                 rotate="auto"
               />
-              <animate attributeName="opacity" values="0;0.7;0.7;0" dur="1.4s" begin={`${pi * 0.35 + 0.1}s`} repeatCount="indefinite" />
+              <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" begin={`${pi * 0.3}s`} repeatCount="indefinite" />
+            </circle>
+            {/* Echo trail dot */}
+            <circle r="4.5" fill={region.color} filter="url(#sparkGlow)" opacity="0.6">
+              <animateMotion
+                dur="1.2s"
+                repeatCount="indefinite"
+                begin={`${pi * 0.3 + 0.18}s`}
+                path={d}
+                rotate="auto"
+              />
+              <animate attributeName="opacity" values="0;0.6;0.6;0" dur="1.2s" begin={`${pi * 0.3 + 0.18}s`} repeatCount="indefinite" />
             </circle>
           </g>
         ))}
 
         {/* ── Spark nodes — pulsing stationary glow dots ────────────────── */}
         {SPARK_NODES[active].map((pt, si) => (
-          <circle
-            key={`spark-${active}-${si}`}
-            cx={pt.x}
-            cy={pt.y}
-            r="5"
-            fill={region.color}
-            filter="url(#sparkGlow)"
-          >
-            <animate
-              attributeName="r"
-              values="3;7;3"
-              dur={`${1.0 + si * 0.22}s`}
-              repeatCount="indefinite"
-              begin={`${si * 0.18}s`}
-            />
-            <animate
-              attributeName="opacity"
-              values="0.2;0.9;0.2"
-              dur={`${1.0 + si * 0.22}s`}
-              repeatCount="indefinite"
-              begin={`${si * 0.18}s`}
-            />
-          </circle>
+          <g key={`spark-${active}-${si}`}>
+            {/* Outer bloom */}
+            <circle cx={pt.x} cy={pt.y} r="10" fill={region.color} filter="url(#sparkGlow)" opacity="0">
+              <animate
+                attributeName="r"
+                values="6;18;6"
+                dur={`${1.1 + si * 0.2}s`}
+                repeatCount="indefinite"
+                begin={`${si * 0.16}s`}
+              />
+              <animate
+                attributeName="opacity"
+                values="0;0.55;0"
+                dur={`${1.1 + si * 0.2}s`}
+                repeatCount="indefinite"
+                begin={`${si * 0.16}s`}
+              />
+            </circle>
+            {/* Bright core */}
+            <circle cx={pt.x} cy={pt.y} r="5" fill={region.color} filter="url(#sparkGlow)">
+              <animate
+                attributeName="r"
+                values="4;10;4"
+                dur={`${1.0 + si * 0.22}s`}
+                repeatCount="indefinite"
+                begin={`${si * 0.18}s`}
+              />
+              <animate
+                attributeName="opacity"
+                values="0.55;1.0;0.55"
+                dur={`${1.0 + si * 0.22}s`}
+                repeatCount="indefinite"
+                begin={`${si * 0.18}s`}
+              />
+            </circle>
+            {/* White hot center */}
+            <circle cx={pt.x} cy={pt.y} r="2.5" fill="white">
+              <animate
+                attributeName="opacity"
+                values="0.4;1.0;0.4"
+                dur={`${1.0 + si * 0.22}s`}
+                repeatCount="indefinite"
+                begin={`${si * 0.18}s`}
+              />
+            </circle>
+          </g>
         ))}
 
         {/* ── Center burst at active region center ─────────────────────── */}
-        <circle cx={c.x} cy={c.y} r="18" fill={region.color} filter="url(#strongGlow)" opacity="0">
-          <animate attributeName="opacity" values="0;0.6;0" dur="2s" repeatCount="indefinite" />
-          <animate attributeName="r" values="12;28;12" dur="2s" repeatCount="indefinite" />
+        <circle cx={c.x} cy={c.y} r="22" fill={region.color} filter="url(#strongGlow)" opacity="0">
+          <animate attributeName="opacity" values="0;0.85;0" dur="1.8s" repeatCount="indefinite" />
+          <animate attributeName="r" values="14;36;14" dur="1.8s" repeatCount="indefinite" />
+        </circle>
+        <circle cx={c.x} cy={c.y} r="8" fill="white" opacity="0">
+          <animate attributeName="opacity" values="0;0.9;0" dur="1.8s" repeatCount="indefinite" />
+          <animate attributeName="r" values="5;14;5" dur="1.8s" repeatCount="indefinite" />
         </circle>
       </svg>
 
       <style>{`
         .brain-pulse-glow {
-          animation: brainGlowPulse 1.8s ease-in-out infinite;
+          animation: brainGlowPulse 1.6s ease-in-out infinite;
         }
         @keyframes brainGlowPulse {
-          0%, 100% { opacity: 0.55; }
+          0%, 100% { opacity: 0.72; }
           50%       { opacity: 1.0; }
         }
       `}</style>
@@ -373,21 +440,20 @@ function BrainModelScene({ activeRegion }: { activeRegion: number }) {
     if (glowRef.current) {
       glowRef.current.position.lerp(target, 0.05);
       glowRef.current.color.set(REGIONS[ar].hex);
-      // Strong pulsing "neuron fire" intensity
-      glowRef.current.intensity = 6.0 + 4.5 * Math.sin(t * 3.5) * Math.sin(t * 1.3);
+      glowRef.current.intensity = 10.0 + 7.0 * Math.sin(t * 3.5) * Math.sin(t * 1.3);
     }
     if (glowRef2.current) {
       const t2 = new THREE.Vector3(...REGION_LIGHT_POS[ar]).multiplyScalar(-0.6);
       glowRef2.current.position.lerp(t2, 0.04);
       glowRef2.current.color.set(REGIONS[ar].hex);
-      glowRef2.current.intensity = 3.0 + 2.5 * Math.sin(t * 4.2 + 1.5);
+      glowRef2.current.intensity = 6.0 + 4.0 * Math.sin(t * 4.2 + 1.5);
     }
     // Update emissive intensity on all meshes
     scaledScene.traverse((node) => {
       if ((node as THREE.Mesh).isMesh) {
         const mat = (node as THREE.Mesh).material as THREE.MeshStandardMaterial;
         mat.emissive.set(REGIONS[ar].hex);
-        mat.emissiveIntensity = 0.12 + 0.18 * (0.5 + 0.5 * Math.sin(t * 3.0));
+        mat.emissiveIntensity = 0.35 + 0.45 * (0.5 + 0.5 * Math.sin(t * 3.0));
       }
     });
   });

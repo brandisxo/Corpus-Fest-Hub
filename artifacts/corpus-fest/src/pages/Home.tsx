@@ -231,10 +231,17 @@ function HeroSection() {
             objectPosition: "center top",
             opacity: loaded ? 1 : 0,
             mixBlendMode: "screen",
-            filter: "contrast(1.3) brightness(1.05) saturate(0.62) sepia(10%)",
-            // Chiaroscuro: fade in from left, full in center, fade to black on right
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.8) 12%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 62%, rgba(0,0,0,0.4) 82%, transparent 96%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.8) 12%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 62%, rgba(0,0,0,0.4) 82%, transparent 96%)",
+            filter: "contrast(1.25) brightness(0.92) saturate(0.58) sepia(8%)",
+            maskImage: [
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 14%, black 32%, black 58%, rgba(0,0,0,0.45) 78%, transparent 94%)",
+              "linear-gradient(to bottom, transparent 0%, black 10%, black 68%, rgba(0,0,0,0.2) 84%, transparent 100%)",
+            ].join(", "),
+            WebkitMaskImage: [
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.85) 14%, black 32%, black 58%, rgba(0,0,0,0.45) 78%, transparent 94%)",
+              "linear-gradient(to bottom, transparent 0%, black 10%, black 68%, rgba(0,0,0,0.2) 84%, transparent 100%)",
+            ].join(", "),
+            maskComposite: "intersect",
+            WebkitMaskComposite: "source-in",
             transition: "opacity 1.8s ease",
           }}
         />
@@ -245,19 +252,29 @@ function HeroSection() {
           bottom: "5%",
           left: 0,
           width: "10%",
-          background: "linear-gradient(to right, rgba(212,175,120,0.38), rgba(212,175,120,0.12) 55%, transparent)",
+          background: "linear-gradient(to right, rgba(212,175,120,0.32), rgba(212,175,120,0.08) 55%, transparent)",
           filter: "blur(10px)",
           mixBlendMode: "screen",
           pointerEvents: "none",
         }} />
-        {/* Bottom anchor vignette */}
+        {/* Top vignette — fade from top edge into black */}
+        <div style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "22%",
+          background: "linear-gradient(to bottom, #000000 0%, rgba(0,0,0,0.6) 50%, transparent 100%)",
+          pointerEvents: "none",
+        }} />
+        {/* Bottom anchor vignette — extended to cover knee area */}
         <div style={{
           position: "absolute",
           bottom: 0,
           left: 0,
           right: 0,
-          height: "35%",
-          background: "linear-gradient(to top, #000000 0%, transparent 100%)",
+          height: "52%",
+          background: "linear-gradient(to top, #000000 0%, #000000 18%, rgba(0,0,0,0.75) 42%, rgba(0,0,0,0.3) 70%, transparent 100%)",
           pointerEvents: "none",
         }} />
         {/* Right-edge sink into black */}
@@ -266,8 +283,8 @@ function HeroSection() {
           top: 0,
           right: 0,
           bottom: 0,
-          width: "20%",
-          background: "linear-gradient(to right, transparent, #000000)",
+          width: "26%",
+          background: "linear-gradient(to right, transparent, rgba(0,0,0,0.7) 55%, #000000)",
           pointerEvents: "none",
         }} />
       </div>
