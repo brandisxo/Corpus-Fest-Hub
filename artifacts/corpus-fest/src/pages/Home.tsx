@@ -736,15 +736,27 @@ function RegistrationSection() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/register", {
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, college: form.batch }),
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: "8dc26f85-1541-441f-a149-d18e34794876",
+          name: form.name,
+          email: form.email,
+          subject: `Corpus 2026 — Registration: ${form.events}`,
+          from_name: "Corpus 2026 Fest",
+          message: `New registration for Corpus 2026:\n\nName: ${form.name}\nEmail: ${form.email}\nPhone: ${form.phone}\nBatch: ${form.batch}\nEvent: ${form.events}`,
+          phone: form.phone,
+          batch: form.batch,
+          event: form.events,
+          botcheck: false,
+        }),
       });
-      if (!res.ok) throw new Error("Registration failed. Please try again.");
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || "Registration failed. Please try again.");
       setSubmitted(true);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -789,6 +801,10 @@ function RegistrationSection() {
                 style={{ appearance: "none", cursor: "pointer" }}
               >
                 <option value="" disabled>Batch *</option>
+                <option value="Batch 2020">Batch 2020</option>
+                <option value="Batch 2021">Batch 2021</option>
+                <option value="Batch 2022">Batch 2022</option>
+                <option value="Batch 2023">Batch 2023</option>
                 <option value="Batch 2024">Batch 2024</option>
                 <option value="Batch 2025">Batch 2025</option>
               </select>
