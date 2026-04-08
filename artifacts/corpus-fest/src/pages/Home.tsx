@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Brain3D from "@/components/Brain3D";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // ── Events data ────────────────────────────────────────────────────────────────
 const SPORTS_EVENTS = [
@@ -188,6 +189,7 @@ function MenuOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
 // ── Hero ───────────────────────────────────────────────────────────────────────
 function HeroSection() {
   const [loaded, setLoaded] = useState(false);
+  const isMobile = useIsMobile();
   useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
 
   return (
@@ -245,9 +247,11 @@ function HeroSection() {
       <div style={{
         position: "relative",
         zIndex: 2,
-        padding: "clamp(80px,12vh,140px) clamp(28px,7vw,88px) clamp(60px,8vh,100px)",
+        padding: isMobile
+          ? "clamp(90px,14vh,130px) clamp(22px,6vw,40px) clamp(60px,8vh,80px)"
+          : "clamp(80px,12vh,140px) clamp(28px,7vw,88px) clamp(60px,8vh,100px)",
         width: "100%",
-        maxWidth: "clamp(52%,58%,66%)",
+        maxWidth: isMobile ? "92%" : "clamp(52%,58%,66%)",
       }}>
 
         {/* Eyebrow */}
@@ -644,6 +648,7 @@ function ScheduleSection() {
 function SplitInfoSection() {
   const ref = useRef<HTMLDivElement>(null);
   const visible = useInView(ref);
+  const isMobile = useIsMobile();
   const pillars = [
     { icon: "→", label: "Sports", desc: "13 competitive events from athletics to chess" },
     { icon: "→", label: "Arts", desc: "Dance, music, visual arts, and comedy" },
@@ -654,7 +659,7 @@ function SplitInfoSection() {
     <section
       ref={ref}
       className={`fade-up ${visible ? "visible" : ""}`}
-      style={{ background: "var(--warm-cream)", display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "65vh" }}
+      style={{ background: "var(--warm-cream)", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", minHeight: isMobile ? "auto" : "65vh" }}
     >
       <div style={{
         padding: "80px clamp(24px,6vw,72px)",

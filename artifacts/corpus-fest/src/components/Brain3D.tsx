@@ -1,4 +1,5 @@
 import { Component, useEffect, useRef, useState, useMemo, Suspense } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
@@ -595,6 +596,7 @@ export default function Brain3D() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const activeRef = useRef(0);
   const [webglOk] = useState(() => isWebGLAvailable());
+  const isMobile = useIsMobile();
   useEffect(() => {
     const onScroll = () => {
       const section = document.getElementById("brain-section");
@@ -635,7 +637,7 @@ export default function Brain3D() {
     <section
       id="brain-section"
       ref={sectionRef}
-      style={{ background: "#000000", position: "relative", minHeight: "400vh" }}
+      style={{ background: "#000000", position: "relative", minHeight: isMobile ? "300vh" : "400vh" }}
     >
       <div
         style={{
@@ -643,15 +645,18 @@ export default function Brain3D() {
           top: 0,
           height: "100vh",
           display: "grid",
-          gridTemplateColumns: "45% 55%",
-          alignItems: "center",
-          padding: "0 clamp(20px,5vw,72px) 0 clamp(20px,4vw,56px)",
-          gap: "clamp(16px,3vw,48px)",
+          gridTemplateColumns: isMobile ? "1fr" : "45% 55%",
+          gridTemplateRows: isMobile ? "1fr auto" : undefined,
+          alignItems: isMobile ? "start" : "center",
+          padding: isMobile
+            ? "clamp(56px,8vh,80px) clamp(18px,5vw,32px) 24px"
+            : "0 clamp(20px,5vw,72px) 0 clamp(20px,4vw,56px)",
+          gap: isMobile ? "16px" : "clamp(16px,3vw,48px)",
           overflow: "hidden",
         }}
       >
-        {/* Left: Brain visual */}
-        <div style={{ position: "relative", height: "clamp(320px,56vh,580px)" }}>
+        {/* Brain visual */}
+        <div style={{ position: "relative", height: isMobile ? "min(48vw, 260px)" : "clamp(320px,56vh,580px)" }}>
           {brainVisual}
           {/* Per-section progress bar (25 / 50 / 75 / 100%) */}
           <div style={{ position: "absolute", bottom: -14, left: 0, right: 0, height: 2, background: "rgba(255,255,255,0.06)", borderRadius: 1 }}>
@@ -665,8 +670,8 @@ export default function Brain3D() {
           </div>
         </div>
 
-        {/* Right: Region info */}
-        <div style={{ paddingRight: "clamp(0px,2vw,24px)" }}>
+        {/* Region info */}
+        <div style={{ paddingRight: isMobile ? 0 : "clamp(0px,2vw,24px)", overflowY: isMobile ? "auto" : undefined }}>
           {/* Label */}
           <p style={{
             fontSize: "0.65rem",
