@@ -202,83 +202,57 @@ function HeroSection() {
         background: "#000000",
       }}
     >
-      {/* Warm amber atmosphere — the statue's background colour radiates across the whole page */}
-      <div style={{
-        position: "absolute",
-        inset: 0,
-        background: "radial-gradient(ellipse 88% 110% at 74% 48%, rgba(170,108,48,0.42) 0%, rgba(135,82,32,0.24) 32%, rgba(95,58,20,0.12) 54%, transparent 70%)",
-        pointerEvents: "none",
-        zIndex: 0,
-      }} />
+      {/* Full-bleed statue — covers the entire hero like a background image */}
+      <img
+        src="/statue.webp"
+        alt="Asclepius"
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "65% top",
+          opacity: loaded ? 1 : 0,
+          mixBlendMode: "screen",
+          filter: "contrast(1.18) brightness(1.0) saturate(0.72)",
+          transition: "opacity 1.8s ease",
+          zIndex: 0,
+        }}
+      />
 
-      {/* Left guard — ensures text is legible */}
+      {/* Left-side text legibility overlay — darkens left, opens up to the right */}
       <div style={{
         position: "absolute",
         inset: 0,
-        background: "linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 28%, rgba(0,0,0,0.22) 52%, transparent 68%)",
+        background: "linear-gradient(to right, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.82) 22%, rgba(0,0,0,0.50) 42%, rgba(0,0,0,0.18) 60%, transparent 76%)",
         pointerEvents: "none",
         zIndex: 1,
       }} />
 
-      {/* Statue container */}
+      {/* Bottom fade — fades into black below (tones down the legs/knee) */}
       <div style={{
         position: "absolute",
-        right: 0,
-        top: 0,
         bottom: 0,
-        width: "62%",
-        zIndex: 0,
-        overflow: "hidden",
-      }}>
-        <img
-          src="/statue.webp"
-          alt="Asclepius"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center top",
-            opacity: loaded ? 1 : 0,
-            mixBlendMode: "screen",
-            filter: "contrast(1.3) brightness(1.05) saturate(0.62) sepia(10%)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 10%, rgba(0,0,0,1) 28%, rgba(0,0,0,1) 64%, rgba(0,0,0,0.4) 82%, transparent 96%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 10%, rgba(0,0,0,1) 28%, rgba(0,0,0,1) 64%, rgba(0,0,0,0.4) 82%, transparent 96%)",
-            transition: "opacity 1.8s ease",
-          }}
-        />
-        {/* Golden rim light on statue's left edge */}
-        <div style={{
-          position: "absolute",
-          top: "5%",
-          bottom: "5%",
-          left: 0,
-          width: "10%",
-          background: "linear-gradient(to right, rgba(212,175,120,0.38), rgba(212,175,120,0.12) 55%, transparent)",
-          filter: "blur(10px)",
-          mixBlendMode: "screen",
-          pointerEvents: "none",
-        }} />
-        {/* Bottom vignette — tones down knee area */}
-        <div style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: "40%",
-          background: "linear-gradient(to top, #000000 0%, rgba(0,0,0,0.6) 40%, transparent 100%)",
-          pointerEvents: "none",
-        }} />
-        {/* Right-edge sink into black */}
-        <div style={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          bottom: 0,
-          width: "20%",
-          background: "linear-gradient(to right, transparent, #000000)",
-          pointerEvents: "none",
-        }} />
-      </div>
+        left: 0,
+        right: 0,
+        height: "38%",
+        background: "linear-gradient(to top, #000000 0%, rgba(0,0,0,0.55) 45%, transparent 100%)",
+        pointerEvents: "none",
+        zIndex: 1,
+      }} />
+
+      {/* Right-edge fade into black */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        width: "12%",
+        background: "linear-gradient(to right, transparent, #000000)",
+        pointerEvents: "none",
+        zIndex: 1,
+      }} />
 
       {/* Content */}
       <div style={{

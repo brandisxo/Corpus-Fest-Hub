@@ -396,12 +396,94 @@ const REGION_LIGHT_POS: [number, number, number][] = [
   [0.8, -1.0, 2.5],
 ];
 
+// 3D positions on brain surface for each region glow disc
+// Brain is ~2.6 units wide, centered at origin
+const REGION_SURFACE_POS: [number, number, number][] = [
+  [0.52, 0.50, 0.92],   // Academic/Frontal — front top right
+  [-0.48, 0.52, 0.92],  // Racket/Parietal  — front top left
+  [-0.28, -0.90, 0.18], // Cerebellum       — back bottom
+  [0.22, -0.42, 0.95],  // Temporal         — front bottom center
+];
+
+function RegionGlowSprites({ activeRegion }: { activeRegion: number }) {
+  const innerRef = useRef<THREE.Sprite>(null);
+  const midRef   = useRef<THREE.Sprite>(null);
+  const outerRef = useRef<THREE.Sprite>(null);
+  const arRef    = useRef(activeRegion);
+
+  useEffect(() => { arRef.current = activeRegion; }, [activeRegion]);
+
+  useFrame((state) => {
+    const t   = state.clock.elapsedTime;
+    const ar  = arRef.current;
+    const pos = REGION_SURFACE_POS[ar];
+    const col = new THREE.Color(REGIONS[ar].hex);
+
+    const pulse1 = 0.55 + 0.45 * Math.sin(t * 3.2);
+    const pulse2 = 0.38 + 0.38 * Math.sin(t * 2.4 + 0.8);
+    const pulse3 = 0.20 + 0.20 * Math.sin(t * 1.8 + 1.6);
+
+    if (innerRef.current) {
+      innerRef.current.position.set(...pos);
+      (innerRef.current.material as THREE.SpriteMaterial).color.set(col);
+      (innerRef.current.material as THREE.SpriteMaterial).opacity = pulse1;
+      innerRef.current.scale.set(0.55 + 0.1 * pulse1, 0.55 + 0.1 * pulse1, 1);
+    }
+    if (midRef.current) {
+      midRef.current.position.set(pos[0], pos[1], pos[2] - 0.05);
+      (midRef.current.material as THREE.SpriteMaterial).color.set(col);
+      (midRef.current.material as THREE.SpriteMaterial).opacity = pulse2;
+      midRef.current.scale.set(1.1 + 0.15 * pulse2, 1.1 + 0.15 * pulse2, 1);
+    }
+    if (outerRef.current) {
+      outerRef.current.position.set(pos[0], pos[1], pos[2] - 0.12);
+      (outerRef.current.material as THREE.SpriteMaterial).color.set(col);
+      (outerRef.current.material as THREE.SpriteMaterial).opacity = pulse3;
+      outerRef.current.scale.set(2.0 + 0.3 * pulse3, 2.0 + 0.3 * pulse3, 1);
+    }
+  });
+
+  return (
+    <>
+      {/* Bright hot core */}
+      <sprite ref={innerRef} position={REGION_SURFACE_POS[0]} scale={[0.55, 0.55, 1]}>
+        <spriteMaterial
+          color={REGIONS[activeRegion].hex}
+          transparent
+          opacity={0.9}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </sprite>
+      {/* Mid glow ring */}
+      <sprite ref={midRef} position={REGION_SURFACE_POS[0]} scale={[1.1, 1.1, 1]}>
+        <spriteMaterial
+          color={REGIONS[activeRegion].hex}
+          transparent
+          opacity={0.5}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </sprite>
+      {/* Outer ambient bloom */}
+      <sprite ref={outerRef} position={REGION_SURFACE_POS[0]} scale={[2.0, 2.0, 1]}>
+        <spriteMaterial
+          color={REGIONS[activeRegion].hex}
+          transparent
+          opacity={0.22}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </sprite>
+    </>
+  );
+}
+
 function BrainModelScene({ activeRegion }: { activeRegion: number }) {
   const { scene } = useGLTF("/brain_human.glb");
-  const groupRef = useRef<THREE.Group>(null);
-  const glowRef = useRef<THREE.PointLight>(null);
-  const glowRef2 = useRef<THREE.PointLight>(null);
-  const arRef = useRef(activeRegion);
+  const groupRef  = useRef<THREE.Group>(null);
+  const glowRef   = useRef<THREE.PointLight>(null);
+  const arRef     = useRef(activeRegion);
 
   const scaledScene = useMemo(() => {
     const cloned = scene.clone(true);
@@ -417,10 +499,10 @@ function BrainModelScene({ activeRegion }: { activeRegion: number }) {
         const mesh = node as THREE.Mesh;
         mesh.material = new THREE.MeshStandardMaterial({
           color: new THREE.Color(0xc89880),
-          roughness: 0.68,
-          metalness: 0.03,
+          roughness: 0.65,
+          metalness: 0.04,
           emissive: new THREE.Color(0x3a1a08),
-          emissiveIntensity: 0.4,
+          emissiveIntensity: 0.35,
         });
       }
     });
@@ -430,36 +512,31 @@ function BrainModelScene({ activeRegion }: { activeRegion: number }) {
   useEffect(() => { arRef.current = activeRegion; }, [activeRegion]);
 
   useFrame((state) => {
-    const t = state.clock.elapsedTime;
+    const t  = state.clock.elapsedTime;
     if (groupRef.current) {
       groupRef.current.rotation.y = Math.sin(t * 0.16) * 0.3;
       groupRef.current.rotation.x = Math.sin(t * 0.11) * 0.05;
     }
-    const ar = arRef.current;
+    const ar     = arRef.current;
     const target = new THREE.Vector3(...REGION_LIGHT_POS[ar]);
     if (glowRef.current) {
-      glowRef.current.position.lerp(target, 0.05);
+      glowRef.current.position.lerp(target, 0.06);
       glowRef.current.color.set(REGIONS[ar].hex);
-      glowRef.current.intensity = 12.0 + 8.0 * Math.sin(t * 3.5) * Math.sin(t * 1.3);
-    }
-    if (glowRef2.current) {
-      const t2 = new THREE.Vector3(...REGION_LIGHT_POS[ar]).multiplyScalar(-0.6);
-      glowRef2.current.position.lerp(t2, 0.04);
-      glowRef2.current.color.set(REGIONS[ar].hex);
-      glowRef2.current.intensity = 7.0 + 4.0 * Math.sin(t * 4.2 + 1.5);
+      glowRef.current.intensity = 14.0 + 9.0 * Math.sin(t * 3.5) * Math.sin(t * 1.3);
     }
   });
 
   return (
     <group ref={groupRef}>
-      <ambientLight intensity={0.6} color={0xfff4ec} />
-      <hemisphereLight args={[0xffd8c8, 0x100806, 0.5]} />
-      <directionalLight position={[3, 5, 5]} intensity={1.8} color={0xfff0e8} />
-      <directionalLight position={[-4, 2, -3]} intensity={0.5} color={0xb0a0c0} />
-      {/* Tight-range point lights so only the active region glows */}
-      <pointLight ref={glowRef} position={REGION_LIGHT_POS[0]} distance={2.8} decay={2.5} intensity={6.0} />
-      <pointLight ref={glowRef2} position={[-0.8, -1.5, 1.0]} distance={2.2} decay={2.8} intensity={3.0} />
+      <ambientLight intensity={0.55} color={0xfff4ec} />
+      <hemisphereLight args={[0xffd8c8, 0x100806, 0.45]} />
+      <directionalLight position={[3, 5, 5]} intensity={1.6} color={0xfff0e8} />
+      <directionalLight position={[-4, 2, -3]} intensity={0.4} color={0xb0a0c0} />
+      {/* Region point light — limited distance so only nearby surface glows */}
+      <pointLight ref={glowRef} position={REGION_LIGHT_POS[0]} distance={2.2} decay={3.0} intensity={6.0} />
       <primitive object={scaledScene} />
+      {/* Visible glow sprites on the brain surface — the main region indicator */}
+      <RegionGlowSprites activeRegion={activeRegion} />
     </group>
   );
 }
