@@ -155,11 +155,11 @@ function SVGBrain({ active }: { active: number }) {
             <stop offset="0%" stopColor="#c09080" />
             <stop offset="100%" stopColor="#906050" />
           </radialGradient>
-          {/* Pulsing radial glow at active region center */}
-          <radialGradient id="activeGlow" cx={c.x} cy={c.y} r="160" gradientUnits="userSpaceOnUse">
+          {/* Pulsing radial glow at active region center — tighter radius */}
+          <radialGradient id="activeGlow" cx={c.x} cy={c.y} r="130" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor={region.color} stopOpacity="1.0" />
-            <stop offset="30%" stopColor={region.color} stopOpacity="0.65" />
-            <stop offset="65%" stopColor={region.color} stopOpacity="0.25" />
+            <stop offset="30%" stopColor={region.color} stopOpacity="0.7" />
+            <stop offset="70%" stopColor={region.color} stopOpacity="0.28" />
             <stop offset="100%" stopColor={region.color} stopOpacity="0" />
           </radialGradient>
           <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
@@ -178,6 +178,12 @@ function SVGBrain({ active }: { active: number }) {
             <feGaussianBlur stdDeviation="28" result="blur" />
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
+          {/* Clip glow strictly to brain anatomy — no square bleed */}
+          <clipPath id="brainOutlineClip">
+            <path d="M 200,45 Q 230,35 270,33 Q 310,32 345,42 Q 385,54 420,76 Q 458,100 473,135 Q 482,160 480,195 Q 478,230 465,258 Q 450,284 428,302 Q 405,320 378,330 Q 358,338 340,340 Q 335,360 330,380 Q 325,395 318,408 Q 308,420 295,425 Q 278,430 262,425 Q 248,420 240,408 Q 232,395 228,380 Q 222,358 218,340 Q 195,338 175,330 Q 148,318 128,302 Q 105,284 90,262 Q 75,238 70,210 Q 64,180 66,152 Q 68,120 80,95 Q 95,68 120,53 Q 155,38 200,45 Z" />
+            <ellipse cx="148" cy="358" rx="80" ry="62" />
+            <path d="M 268,362 Q 268,380 270,400 Q 272,415 278,425 Q 284,435 290,438 Q 298,440 305,436 Q 312,430 316,418 Q 320,405 320,390 Q 320,375 318,362 Z" />
+          </clipPath>
         </defs>
 
         {/* ── Brain base anatomy ─────────────────────────────────────────── */}
@@ -221,40 +227,44 @@ function SVGBrain({ active }: { active: number }) {
           return <path key={i} d={`M ${148 - span + 5},${y} Q ${148},${y - 3} ${148 + span - 5},${y}`} fill="none" stroke="#a07868" strokeWidth="1.5" opacity="0.6" strokeLinecap="round" />;
         })}
 
-        {/* ── Region highlight fills ─────────────────────────────────────── */}
-        {/* Broad ambient light layer behind the active region */}
-        {REGIONS.map((r, i) => (
-          <path
-            key={`ambient-${i}`}
-            d={regionFillPaths[i]}
-            fill={i === active ? r.color : "transparent"}
-            fillOpacity={i === active ? 0.18 : 0}
-            filter={i === active ? "url(#broadGlow)" : undefined}
-            style={{ transition: "all 0.7s ease" }}
-          />
-        ))}
-        {/* Crisp region boundary fill */}
-        {REGIONS.map((r, i) => (
-          <path
-            key={`fill-${i}`}
-            d={regionFillPaths[i]}
-            fill={i === active ? r.color : "transparent"}
-            fillOpacity={i === active ? 0.48 : 0}
-            stroke={i === active ? r.color : "transparent"}
-            strokeWidth={i === active ? 2.5 : 0}
-            strokeOpacity={i === active ? 0.85 : 0}
-            filter={i === active ? "url(#softGlow)" : undefined}
-            style={{ transition: "all 0.7s ease" }}
-          />
-        ))}
+        {/* ── Region highlight fills — clipped to brain anatomy ─────────── */}
+        <g clipPath="url(#brainOutlineClip)">
+          {/* Broad ambient light layer behind the active region */}
+          {REGIONS.map((r, i) => (
+            <path
+              key={`ambient-${i}`}
+              d={regionFillPaths[i]}
+              fill={i === active ? r.color : "transparent"}
+              fillOpacity={i === active ? 0.22 : 0}
+              filter={i === active ? "url(#broadGlow)" : undefined}
+              style={{ transition: "all 0.7s ease" }}
+            />
+          ))}
+          {/* Soft luminous glow fill on the region */}
+          {REGIONS.map((r, i) => (
+            <path
+              key={`fill-${i}`}
+              d={regionFillPaths[i]}
+              fill={i === active ? r.color : "transparent"}
+              fillOpacity={i === active ? 0.32 : 0}
+              stroke={i === active ? r.color : "transparent"}
+              strokeWidth={i === active ? 2 : 0}
+              strokeOpacity={i === active ? 0.6 : 0}
+              filter={i === active ? "url(#softGlow)" : undefined}
+              style={{ transition: "all 0.7s ease" }}
+            />
+          ))}
+        </g>
 
-        {/* ── Active region: pulsing inner glow ─────────────────────────── */}
-        <rect
-          x="0" y="0" width="520" height="480"
-          fill="url(#activeGlow)"
-          className="brain-pulse-glow"
-          style={{ transition: "opacity 0.5s ease" }}
-        />
+        {/* ── Active region: pulsing inner glow — clipped to brain shape only ── */}
+        <g clipPath="url(#brainOutlineClip)">
+          <rect
+            x="0" y="0" width="520" height="480"
+            fill="url(#activeGlow)"
+            className="brain-pulse-glow"
+            style={{ transition: "opacity 0.5s ease" }}
+          />
+        </g>
 
         {/* ── Neural impulse paths (visible traces) ─────────────────────── */}
         {NEURAL_PATHS[active].map((d, pi) => (

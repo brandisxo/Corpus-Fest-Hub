@@ -199,10 +199,10 @@ function HeroSection() {
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
-        background: "#000000",
+        background: "#2e1a0a",
       }}
     >
-      {/* Full-bleed statue — covers the entire hero like a background image */}
+      {/* Full statue — contained so nothing is cropped */}
       <img
         src="/statue.webp"
         alt="Asclepius"
@@ -211,45 +211,32 @@ function HeroSection() {
           inset: 0,
           width: "100%",
           height: "100%",
-          objectFit: "cover",
-          objectPosition: "65% top",
-          opacity: loaded ? 1 : 0,
-          mixBlendMode: "screen",
-          filter: "contrast(1.18) brightness(1.0) saturate(0.72)",
+          objectFit: "contain",
+          objectPosition: "right center",
+          opacity: loaded ? 0.95 : 0,
+          filter: "contrast(1.04) brightness(1.08) saturate(0.82)",
           transition: "opacity 1.8s ease",
           zIndex: 0,
         }}
       />
 
-      {/* Left-side text legibility overlay — darkens left, opens up to the right */}
+      {/* Warm left-to-right fade — just enough to keep text legible */}
       <div style={{
         position: "absolute",
         inset: 0,
-        background: "linear-gradient(to right, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.82) 22%, rgba(0,0,0,0.50) 42%, rgba(0,0,0,0.18) 60%, transparent 76%)",
+        background: "linear-gradient(to right, rgba(35,18,6,0.55) 0%, rgba(35,18,6,0.42) 30%, rgba(35,18,6,0.20) 55%, rgba(35,18,6,0.06) 70%, transparent 82%)",
         pointerEvents: "none",
         zIndex: 1,
       }} />
 
-      {/* Bottom fade — fades into black below (tones down the legs/knee) */}
+      {/* Bottom fade */}
       <div style={{
         position: "absolute",
         bottom: 0,
         left: 0,
         right: 0,
-        height: "38%",
-        background: "linear-gradient(to top, #000000 0%, rgba(0,0,0,0.55) 45%, transparent 100%)",
-        pointerEvents: "none",
-        zIndex: 1,
-      }} />
-
-      {/* Right-edge fade into black */}
-      <div style={{
-        position: "absolute",
-        top: 0,
-        right: 0,
-        bottom: 0,
-        width: "12%",
-        background: "linear-gradient(to right, transparent, #000000)",
+        height: "22%",
+        background: "linear-gradient(to top, #2e1a0a 0%, rgba(40,20,8,0.4) 50%, transparent 100%)",
         pointerEvents: "none",
         zIndex: 1,
       }} />
