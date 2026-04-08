@@ -199,58 +199,25 @@ function HeroSection() {
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
-        background: "linear-gradient(150deg, #1a1612 0%, #13100c 45%, #0d0a08 100%)",
+        background: "#000000",
       }}
     >
-      {/* Left text-area shadow — keeps text legible */}
+      {/* Left guard — ensures text is legible over any statue bleed */}
       <div style={{
         position: "absolute",
         inset: 0,
-        background: "linear-gradient(to right, rgba(20,14,10,0.96) 0%, rgba(20,14,10,0.72) 35%, rgba(20,14,10,0.18) 62%, transparent 100%)",
+        background: "linear-gradient(to right, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.82) 32%, rgba(0,0,0,0.35) 55%, transparent 72%)",
         pointerEvents: "none",
         zIndex: 1,
       }} />
-      {/* Bottom fade */}
-      <div style={{
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: "32%",
-        background: "linear-gradient(to top, rgba(13,10,8,0.92), transparent)",
-        pointerEvents: "none",
-        zIndex: 1,
-      }} />
-      {/* Right-side vignette — darkens statue's right edge, anchors it */}
+
+      {/* Statue container */}
       <div style={{
         position: "absolute",
         right: 0,
         top: 0,
         bottom: 0,
-        width: "22%",
-        background: "linear-gradient(to right, transparent, rgba(10,8,6,0.85))",
-        pointerEvents: "none",
-        zIndex: 2,
-      }} />
-      {/* Bottom-right vignette — sculptural anchor */}
-      <div style={{
-        position: "absolute",
-        right: 0,
-        bottom: 0,
-        width: "48%",
-        height: "40%",
-        background: "radial-gradient(ellipse at 80% 90%, rgba(8,6,4,0.75) 0%, transparent 70%)",
-        pointerEvents: "none",
-        zIndex: 2,
-      }} />
-
-      {/* Statue — museum spotlight treatment */}
-      <div style={{
-        position: "absolute",
-        right: 0,
-        bottom: 0,
-        width: "clamp(52%,58%,66%)",
-        height: "100%",
+        width: "62%",
         zIndex: 0,
         overflow: "hidden",
       }}>
@@ -264,52 +231,65 @@ function HeroSection() {
             objectPosition: "center top",
             opacity: loaded ? 1 : 0,
             mixBlendMode: "screen",
-            // Museum spotlight: warm limestone tone, upper-left directional
-            filter: "sepia(18%) contrast(1.22) brightness(1.18) saturate(0.72)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 8%, rgba(0,0,0,0.92) 30%, rgba(0,0,0,0.88) 68%, rgba(0,0,0,0.3) 88%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 8%, rgba(0,0,0,0.92) 30%, rgba(0,0,0,0.88) 68%, rgba(0,0,0,0.3) 88%, transparent 100%)",
+            filter: "contrast(1.3) brightness(1.05) saturate(0.62) sepia(10%)",
+            // Chiaroscuro: fade in from left, full in center, fade to black on right
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.8) 12%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 62%, rgba(0,0,0,0.4) 82%, transparent 96%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.8) 12%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 62%, rgba(0,0,0,0.4) 82%, transparent 96%)",
             transition: "opacity 1.8s ease",
           }}
         />
+        {/* Golden rim light on statue's left edge (facing the text) */}
+        <div style={{
+          position: "absolute",
+          top: "5%",
+          bottom: "5%",
+          left: 0,
+          width: "10%",
+          background: "linear-gradient(to right, rgba(212,175,120,0.38), rgba(212,175,120,0.12) 55%, transparent)",
+          filter: "blur(10px)",
+          mixBlendMode: "screen",
+          pointerEvents: "none",
+        }} />
+        {/* Bottom anchor vignette */}
+        <div style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: "35%",
+          background: "linear-gradient(to top, #000000 0%, transparent 100%)",
+          pointerEvents: "none",
+        }} />
+        {/* Right-edge sink into black */}
+        <div style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          width: "20%",
+          background: "linear-gradient(to right, transparent, #000000)",
+          pointerEvents: "none",
+        }} />
       </div>
-      {/* Upper-left rim light on statue */}
-      <div style={{
-        position: "absolute",
-        top: 0,
-        left: "30%",
-        width: "40%",
-        height: "60%",
-        background: "radial-gradient(ellipse at 30% 15%, rgba(210,185,145,0.06) 0%, transparent 65%)",
-        pointerEvents: "none",
-        zIndex: 1,
-      }} />
-
-      {/* Gold grain overlay for texture */}
-      <div style={{
-        position: "absolute",
-        inset: 0,
-        background: "radial-gradient(ellipse at 65% 50%, rgba(201,169,110,0.06) 0%, transparent 65%)",
-        pointerEvents: "none",
-        zIndex: 0,
-      }} />
 
       {/* Content */}
       <div style={{
         position: "relative",
         zIndex: 2,
-        padding: "120px clamp(24px,6vw,80px) 80px",
+        padding: "clamp(80px,12vh,140px) clamp(28px,7vw,88px) clamp(60px,8vh,100px)",
         width: "100%",
-        maxWidth: "clamp(58%,65%,72%)",
+        maxWidth: "clamp(52%,58%,66%)",
       }}>
-        {/* Eyebrow label */}
+
+        {/* Eyebrow */}
         <p style={{
-          fontSize: "0.7rem",
-          letterSpacing: "0.3em",
+          fontSize: "0.69rem",
+          letterSpacing: "0.22em",
           textTransform: "uppercase",
-          color: "rgba(201,169,110,0.7)",
-          marginBottom: 24,
+          color: "#a88b5e",
+          marginBottom: 28,
           opacity: loaded ? 1 : 0,
-          transform: loaded ? "translateY(0)" : "translateY(16px)",
+          transform: loaded ? "translateY(0)" : "translateY(14px)",
           transition: "all 0.8s ease 0.2s",
           fontFamily: "'DM Sans', sans-serif",
         }}>
@@ -317,45 +297,57 @@ function HeroSection() {
         </p>
 
         {/* Main title */}
-        <h1
-          style={{
-            fontSize: "clamp(4.2rem, 13.5vw, 14rem)",
-            fontWeight: 700,
-            letterSpacing: "-0.04em",
-            lineHeight: 0.88,
-            color: "#ffffff",
-            whiteSpace: "nowrap",
-            opacity: loaded ? 1 : 0,
-            transform: loaded ? "translateX(0)" : "translateX(-50px)",
-            transition: "all 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s",
-            fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontStyle: "italic",
-            textShadow: "0 2px 24px rgba(210,180,130,0.18), 0 1px 3px rgba(0,0,0,0.5)",
-          }}
-        >
+        <h1 style={{
+          fontSize: "clamp(4.4rem, 13.5vw, 14rem)",
+          fontWeight: 700,
+          letterSpacing: "-0.04em",
+          lineHeight: 0.88,
+          color: "#ffffff",
+          whiteSpace: "nowrap",
+          opacity: loaded ? 1 : 0,
+          transform: loaded ? "translateX(0)" : "translateX(-48px)",
+          transition: "all 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s",
+          fontFamily: "'Cormorant Garamond', Georgia, serif",
+          fontStyle: "italic",
+          textShadow: "0 2px 8px rgba(212,175,120,0.3)",
+        }}>
           Corpus
         </h1>
 
-        {/* Thin rule */}
+        {/* Gold rule under title */}
         <div style={{
-          width: loaded ? 80 : 0,
-          height: 1,
-          background: "rgba(201,169,110,0.5)",
-          marginTop: 28,
-          marginBottom: 20,
-          transition: "width 1s ease 0.9s",
+          width: loaded ? 120 : 0,
+          height: 2,
+          background: "#d4af78",
+          marginTop: 20,
+          marginBottom: 24,
+          transition: "width 1s ease 0.85s",
         }} />
 
-        {/* Date + tagline */}
+        {/* Date + description */}
         <div style={{
           opacity: loaded ? 1 : 0,
           transform: loaded ? "translateY(0)" : "translateY(14px)",
-          transition: "all 0.8s ease 0.8s",
+          transition: "all 0.8s ease 0.78s",
         }}>
-          <p style={{ color: "var(--gold-accent)", fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 10, fontFamily: "'DM Sans', sans-serif" }}>
+          <p style={{
+            color: "#e8e3db",
+            fontSize: "clamp(0.82rem,1.1vw,1rem)",
+            fontWeight: 500,
+            letterSpacing: "0.05em",
+            marginBottom: 18,
+            fontFamily: "'DM Sans', sans-serif",
+          }}>
             22 – 25 April 2026
           </p>
-          <p style={{ color: "rgba(232,227,219,0.68)", fontSize: "0.92rem", maxWidth: 340, lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
+          <p style={{
+            color: "#e8e3db",
+            fontSize: "clamp(0.88rem,1.1vw,1.1rem)",
+            lineHeight: 1.65,
+            maxWidth: 440,
+            fontFamily: "'DM Sans', sans-serif",
+            opacity: 0.72,
+          }}>
             Where medicine meets passion. Four days of sports, arts, culture, and academic excellence.
           </p>
         </div>
@@ -364,28 +356,38 @@ function HeroSection() {
         <div style={{
           marginTop: 36,
           display: "flex",
-          gap: 14,
+          gap: 16,
           flexWrap: "wrap",
           opacity: loaded ? 1 : 0,
           transition: "all 0.8s ease 1.0s",
         }}>
           <a
             href="#events"
+            className="hero-btn-primary"
             style={{
-              background: "#f0e8d8",
-              color: "#0d0803",
-              padding: "13px 28px",
-              fontSize: "0.72rem",
-              fontWeight: 600,
-              letterSpacing: "0.12em",
+              background: "#f5f1e8",
+              color: "#000000",
+              padding: "16px 32px",
+              fontSize: "0.8rem",
+              fontWeight: 700,
+              letterSpacing: "0.1em",
               textTransform: "uppercase",
-              borderRadius: 3,
+              borderRadius: 0,
               textDecoration: "none",
-              transition: "background 0.3s ease, color 0.3s ease",
+              display: "inline-block",
+              transition: "all 300ms ease-out",
               fontFamily: "'DM Sans', sans-serif",
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = "#c9a96e"; e.currentTarget.style.color = "#0d0803"; }}
-            onMouseLeave={e => { e.currentTarget.style.background = "#f0e8d8"; e.currentTarget.style.color = "#0d0803"; }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = "#d4af78";
+              e.currentTarget.style.boxShadow = "0 4px 16px rgba(212,175,120,0.4)";
+              e.currentTarget.style.transform = "translateY(-2px)";
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = "#f5f1e8";
+              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
           >
             Explore Events
           </a>
@@ -393,42 +395,48 @@ function HeroSection() {
             href="#register"
             style={{
               background: "transparent",
-              color: "rgba(240,220,190,0.65)",
-              padding: "13px 28px",
-              fontSize: "0.72rem",
-              fontWeight: 600,
-              letterSpacing: "0.12em",
+              color: "#ffffff",
+              padding: "16px 32px",
+              fontSize: "0.8rem",
+              fontWeight: 700,
+              letterSpacing: "0.1em",
               textTransform: "uppercase",
-              borderRadius: 3,
+              borderRadius: 0,
               textDecoration: "none",
-              border: "1px solid rgba(240,220,190,0.25)",
-              transition: "all 0.3s ease",
+              display: "inline-block",
+              border: "1px solid #d4af78",
+              transition: "all 300ms ease-out",
               fontFamily: "'DM Sans', sans-serif",
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(201,169,110,0.7)"; e.currentTarget.style.color = "#c9a96e"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(240,220,190,0.25)"; e.currentTarget.style.color = "rgba(240,220,190,0.65)"; }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = "#d4af78";
+              e.currentTarget.style.color = "#000000";
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = "#ffffff";
+            }}
           >
             Register Now
           </a>
         </div>
 
-        {/* Stats */}
+        {/* Stats — inline with separators */}
         <div style={{
-          marginTop: 52,
+          marginTop: 48,
           display: "flex",
-          gap: "clamp(16px,4vw,40px)",
+          alignItems: "center",
+          gap: 0,
           flexWrap: "wrap",
           opacity: loaded ? 1 : 0,
           transition: "all 0.8s ease 1.2s",
+          fontFamily: "'DM Sans', sans-serif",
         }}>
-          {[{ label: "Events", value: "20+" }, { label: "Days", value: "4" }, { label: "Sports", value: "13" }].map((s) => (
-            <div key={s.label} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <span style={{ fontSize: "clamp(1.6rem,4vw,2.5rem)", fontWeight: 800, color: "#d4af78", letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'DM Sans', sans-serif" }}>
-                {s.value}
-              </span>
-              <span style={{ fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(232,218,190,0.35)", fontFamily: "'DM Sans', sans-serif" }}>
-                {s.label}
-              </span>
+          {[{ label: "Events", value: "20+" }, { label: "Days", value: "4" }, { label: "Sports", value: "13" }].map((s, i) => (
+            <div key={s.label} style={{ display: "flex", alignItems: "center" }}>
+              {i > 0 && <span style={{ color: "#4a4a4a", margin: "0 16px", fontSize: "0.85rem" }}>|</span>}
+              <span style={{ fontWeight: 700, color: "#d4af78", fontSize: "clamp(0.85rem,1.2vw,1rem)", marginRight: 5 }}>{s.value}</span>
+              <span style={{ color: "#a88b5e", fontSize: "clamp(0.75rem,1vw,0.88rem)", fontWeight: 500 }}>{s.label}</span>
             </div>
           ))}
         </div>
@@ -437,22 +445,32 @@ function HeroSection() {
       {/* Scroll indicator */}
       <div style={{
         position: "absolute",
-        bottom: 36,
+        bottom: 32,
         left: "50%",
         transform: "translateX(-50%)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: 8,
+        gap: 6,
         zIndex: 3,
-        opacity: loaded ? 0.45 : 0,
+        opacity: loaded ? 1 : 0,
         transition: "opacity 1s ease 1.6s",
+        animation: "scrollBounce 2s ease-in-out infinite",
       }}>
-        <p style={{ fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(201,169,110,0.6)", fontFamily: "'DM Sans', sans-serif" }}>
+        <p style={{ fontSize: "0.6rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "#a88b5e", fontFamily: "'DM Sans', sans-serif" }}>
           Scroll
         </p>
-        <div style={{ width: 1, height: 55, background: "linear-gradient(to bottom, transparent, rgba(201,169,110,0.5), transparent)", animation: "scrollPulse 2s ease-in-out infinite" }} />
+        <svg width="12" height="16" viewBox="0 0 12 16" fill="none">
+          <path d="M6 0v12M1 8l5 6 5-6" stroke="#a88b5e" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
       </div>
+
+      <style>{`
+        @keyframes scrollBounce {
+          0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.55; }
+          50% { transform: translateX(-50%) translateY(5px); opacity: 0.85; }
+        }
+      `}</style>
     </section>
   );
 }

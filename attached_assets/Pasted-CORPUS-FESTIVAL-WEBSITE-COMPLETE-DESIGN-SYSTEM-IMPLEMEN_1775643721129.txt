@@ -1,0 +1,354 @@
+CORPUS FESTIVAL WEBSITE - COMPLETE DESIGN SYSTEM & IMPLEMENTATION PROMPT
+VERSION 2.0 - FINAL
+
+=============================================================================
+BRAND FOUNDATION
+=============================================================================
+
+COLOR PALETTE:
+- Primary Black: #000000 (pure black, used for all backgrounds except About section)
+- Accent Gold: #d4af78 (primary accent - buttons, highlights, neural animations)
+- Muted Gold: #a88b5e (secondary accent - subtle UI elements, borders)
+- Text White: #ffffff (primary text)
+- Text Cream: #e8e3db (secondary text, descriptions)
+- Cream Panel: #f5f1e8 (About section background only)
+- Subtle Gray: #4a4a4a (inactive states, metadata)
+
+CATEGORY-SPECIFIC ACCENT COLORS (for brain sections):
+- Academic & Arts: #d4af78 (warm gold)
+- Racket & Court Sports: #7ba3d4 (cool blue)
+- Field & Track Events: #8bc4a0 (mint green)
+- Performance Arts: #d48b7b (warm coral/peach)
+
+TYPOGRAPHY:
+- Headline Font: Italic serif (Freight Display, Bodoni, or similar) for all section titles
+- Body Font: Sans-serif (Inter, Satoshi, or similar)
+- Nav Font: Sans-serif, uppercase, letter-spacing: 0.15em
+
+=============================================================================
+HERO SECTION (LANDING PAGE)
+=============================================================================
+
+LAYOUT:
+- Full viewport height (100vh)
+- Left 50%: Text content
+- Right 50%: Statue image
+
+BACKGROUND:
+- Pure black #000000
+- No gradients, no spotlights, no noise
+- Flat, deep, premium darkness
+
+STATUE IMAGE TREATMENT:
+- Base statue color: Dark stone (#2a241f to #3d362f in midtones)
+- DO NOT brighten the entire statue globally
+- Apply dramatic chiaroscuro lighting:
+
+  LEFT EDGE (facing text):
+  - Bright golden rim light (#d4af78)
+  - 10-15px width glow effect
+  - Creates sharp separation from background
+  - Light should feel directional (from upper left at ~45° angle)
+  - This edge should be BRIGHT and clear
+  
+  CENTER (statue body):
+  - Keep natural stone midtones
+  - Preserve sculptural detail in fabric folds, musculature, face
+  - Increase clarity/sharpness by 25%
+  - Boost local contrast by 30% to emphasize three-dimensionality
+  - Should look carved and dimensional, not flat
+  
+  RIGHT EDGE (away from text):
+  - Fade gradually into pure black
+  - No visible edge on right side
+  - Statue should "sink" into the darkness seamlessly
+  - Gradient fade starts at 70% of statue width
+  
+- Bottom of statue: Darker vignette (40% opacity black gradient) to anchor it
+- Top lighting: Subtle highlight on head/shoulders suggesting overhead museum light
+- Overall impression: museum spotlight effect, dramatic and sculptural, like seeing a masterpiece in a dark gallery
+
+TEXT CONTENT:
+- "GMC BANSWARA — ANNUAL FEST '26" 
+  - Font: Sans-serif, 11px, uppercase
+  - Color: #a88b5e
+  - Letter-spacing: 0.2em
+  - Position: Top left of text area
+
+- "Corpus"
+  - Font: Large italic serif (120px desktop, 72px mobile)
+  - Color: #ffffff
+  - Text-shadow: 0 2px 8px rgba(212, 175, 120, 0.3) for subtle warm glow
+  - Should be the visual anchor
+
+- Decorative line under "Corpus"
+  - Width: 120px
+  - Height: 2px
+  - Color: #d4af78
+  - Margin: 16px 0
+
+- "22 – 25 APRIL 2026"
+  - Font: Sans-serif, 16px, medium weight
+  - Color: #e8e3db
+  - Letter-spacing: 0.05em
+
+- Description text:
+  - "Where medicine meets passion. Four days of sports, arts, culture, and academic excellence."
+  - Font: Sans-serif, 18px, regular weight
+  - Color: #e8e3db
+  - Line-height: 1.6
+  - Max-width: 480px
+  - Margin-top: 24px
+
+BUTTONS:
+Positioned horizontally with 16px gap
+
+- "EXPLORE EVENTS" (primary):
+  - Background: #f5f1e8 (cream)
+  - Text: #000000 (black)
+  - Font: Sans-serif, 14px, bold, uppercase
+  - Letter-spacing: 0.1em
+  - Padding: 16px 32px
+  - Border-radius: 0 (sharp corners for premium feel)
+  - Hover state:
+    - Background: #d4af78 (gold)
+    - Box-shadow: 0 4px 16px rgba(212, 175, 120, 0.4)
+    - Transform: translateY(-2px)
+    - Transition: all 300ms ease-out
+
+- "REGISTER NOW" (secondary):
+  - Background: transparent
+  - Border: 1px solid #d4af78
+  - Text: #ffffff
+  - Same sizing/typography as primary button
+  - Hover state:
+    - Background: #d4af78
+    - Text: #000000
+    - Border: 1px solid #d4af78
+    - Transition: all 300ms ease-out
+
+STATS (REMOVE OR REDESIGN):
+OPTION 1 (RECOMMENDED): Remove entirely for cleaner aesthetic
+
+OPTION 2: If keeping, redesign as:
+- Position: Bottom left, below buttons, margin-top 48px
+- Horizontal layout with dividers
+- "20+ Events  |  4 Days  |  13 Sports"
+- Font: Sans-serif, 14px, medium weight
+- Color: #a88b5e
+- Number styling: Bold, #d4af78
+
+SCROLL INDICATOR:
+- Text: "SCROLL" with down arrow (↓)
+- Position: Bottom center
+- Color: #a88b5e
+- Animation: Fade in/out, 2s loop, ease-in-out
+- Transform: translateY oscillates 4px up/down
+
+=============================================================================
+BRAIN SECTION - "WHAT IS CORPUS" (4 CATEGORIES)
+=============================================================================
+
+GLOBAL SECTION STRUCTURE:
+- Full viewport height per category (400vh total)
+- Pure black background #000000
+- Each scroll section triggers new brain state
+
+LAYOUT:
+- Left 45%: 3D brain model (fixed position during scroll)
+- Right 55%: Category content (changes on scroll)
+
+---
+
+3D BRAIN MODEL SPECS:
+- High-detail 3D model with clear gyri/sulci definition
+- Matte sculptural finish (NO glossy/wet shaders)
+- Base color: Warm cream/limestone (#e8dcce)
+- Lighting: Soft ambient, no harsh shadows
+- Idle state: Very slow rotation (0.08rpm clockwise)
+- Model should be centered vertically in left panel
+
+---
+
+SECTION 1: ACADEMIC & ARTS
+
+Brain State:
+- Color: Warm gold (#d4af78) with cream base
+- Active region: Frontal lobe (prefrontal cortex area)
+- Rotation: (-5°x, 10°y, 0°z) to face forward-left
+- Region highlight: 25% brightness increase in frontal area
+- Smooth rotation transition: 800ms ease-out
+
+Neural Animation:
+- 5 neural pathways emanating from frontal lobe center
+- Path color: Gold (#d4af78)
+- Path properties:
+  - Stroke: 2px
+  - Glow: 8px blur, 0.7 opacity
+  - Base opacity: 0.5
+- 5 traveling neuron dots:
+  - Size: 8px radius
+  - Color: Bright gold (#d4af78)
+  - Glow: 14px blur, 1.0 opacity
+  - Travel speed: 1.3s per path
+  - Stagger: 180ms between dots
+  - Ease: cubic-bezier(0.4, 0, 0.2, 1)
+  - Loop continuously
+- Path characteristics:
+  - Origin: Center of frontal lobe
+  - Branch 1-2 times as they extend
+  - Organic bezier curves (not straight lines)
+  - Spread: 35% of brain width
+  - End: Fade to 0 opacity at terminus
+
+Right Panel Content:
+- "WHAT IS CORPUS" (small uppercase, #a88b5e, letter-spacing 0.2em)
+- Dot navigation: 4 dots, first one filled gold, others outlined
+- "Academic & Arts" (large italic serif 56px, #ffffff)
+- Event pills:
+  - "CHESS" "DEBATE" "ART" "ACADEMIC QUIZ"
+  - Style: Transparent background, 1px gold border (#d4af78)
+  - Padding: 10px 20px
+  - Font: 13px, uppercase, letter-spacing 0.08em
+  - Hover: Background fills with gold, text turns black
+- "SCROLL TO EXPLORE REGIONS" (bottom, #4a4a4a, small)
+
+Progress bar at bottom left:
+- Width: 40% of left panel width
+- Height: 2px
+- Color: #d4af78
+- Shows 25% filled (Section 1 of 4)
+
+---
+
+SECTION 2: RACKET & COURT SPORTS
+
+Brain State:
+- Color: Cool blue (#7ba3d4) with cream base
+- Active region: Motor cortex + Cerebellum
+- Rotation: (0°x, -15°y, 5°z) to show motor strip
+- Region highlight: Motor strip and cerebellum glow blue
+- Smooth transition from previous state: 800ms
+
+Neural Animation:
+- Same technical specs as Section 1
+- Color change: Gold → Blue (#7ba3d4)
+- 6 neural pathways (motor cortex has more activity)
+- Paths connect motor cortex to cerebellum
+- More linear paths (representing motor commands)
+
+Right Panel Content:
+- Dot navigation: 2nd dot filled blue
+- "Racket & Court Sports" (large italic serif, #ffffff)
+- Event pills:
+  - "BADMINTON" "TABLE TENNIS" "BASKETBALL" "VOLLEYBALL"
+  - Same style but blue border (#7ba3d4)
+  - Hover: Blue fill
+
+Progress bar:
+- 50% filled, blue color (#7ba3d4)
+
+---
+
+SECTION 3: FIELD & TRACK EVENTS
+
+Brain State:
+- Color: Mint green (#8bc4a0) with cream base
+- Active region: Motor cortex (larger area) + Cerebellum
+- Rotation: (8°x, 5°y, -3°z) slight tilt to show top motor area
+- Region highlight: Broad motor cortex activation
+
+Neural Animation:
+- Color: Mint green (#8bc4a0)
+- 7 neural pathways (highest activity for physical events)
+- Paths are more spread out, covering wider motor region
+- Faster traveling dots (1.1s per path) for energy feeling
+
+Right Panel Content:
+- Dot navigation: 3rd dot filled green
+- "Field & Track Events" (large italic serif, #ffffff)
+- Event pills:
+  - "RUNNING" "KHO KHO" "KABBADI" "FOOTBALL" "SHOT PUT"
+  - Same style but green border (#8bc4a0)
+  - 5 pills total, wrap to 2 rows if needed
+
+Progress bar:
+- 75% filled, green color (#8bc4a0)
+
+---
+
+SECTION 4: PERFORMANCE ARTS
+
+Brain State:
+- Color: Warm coral/peach (#d48b7b) with cream base
+- Active region: Right hemisphere (creativity centers, temporal lobe)
+- Rotation: (0°x, 20°y, 0°z) to show right hemisphere clearly
+- Region highlight: Right hemisphere glows coral
+- This is the "creative brain" state
+
+Neural Animation:
+- Color: Coral (#d48b7b)
+- 5 neural pathways in right hemisphere
+- More flowing, organic paths (representing creativity)
+- Paths interconnect more (not just radiating out)
+- Slower, dreamy timing: 1.6s per path
+
+Right Panel Content:
+- Dot navigation: 4th dot filled coral
+- "Performance Arts" (large italic serif, #ffffff)
+- Event pills:
+  - "DANCE" "SINGING" "STAND-UP COMEDY" "FUN EVENTS"
+  - Same style but coral border (#d48b7b)
+
+Progress bar:
+- 100% filled, coral color (#d48b7b)
+
+---
+
+SCROLL BEHAVIOR & TRANSITIONS:
+
+Technical Implementation:
+```javascript
+// Scroll detection
+const sections = [
+  { id: 'academic', region: 'frontal', color: '#d4af78', rotation: [-5, 10, 0] },
+  { id: 'sports-court', region: 'motor', color: '#7ba3d4', rotation: [0, -15, 5] },
+  { id: 'sports-field', region: 'motor-wide', color: '#8bc4a0', rotation: [8, 5, -3] },
+  { id: 'arts', region: 'right-hemisphere', color: '#d48b7b', rotation: [0, 20, 0] }
+];
+
+// Intersection Observer
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const sectionData = sections[entry.target.dataset.index];
+      transitionBrainState(sectionData);
+    }
+  });
+}, { threshold: 0.6 });
+
+function transitionBrainState(data) {
+  // 1. Fade out current neural animation (300ms)
+  fadeOutNeuralPaths();
+  
+  // 2. Rotate brain (800ms ease-out)
+  rotateBrain(data.rotation);
+  
+  // 3. Crossfade brain color (600ms)
+  morphBrainColor(data.color);
+  
+  // 4. Highlight new region (400ms delay, 500ms fade-in)
+  setTimeout(() => {
+    highlightRegion(data.region, data.color);
+  }, 400);
+  
+  // 5. Draw new neural paths (600ms delay, 500ms draw)
+  setTimeout(() => {
+    drawNeuralPaths(data.region, data.color);
+  }, 600);
+  
+  // 6. Start neuron dots (1000ms delay)
+  setTimeout(() => {
+    animateNeuronDots(data.color);
+  }, 1000);
+}

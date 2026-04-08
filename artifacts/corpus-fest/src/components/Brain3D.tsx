@@ -78,6 +78,33 @@ const SPARK_NODES: { x: number; y: number }[][] = [
   [{ x: 260, y: 272 }, { x: 300, y: 262 }, { x: 320, y: 296 }, { x: 278, y: 318 }, { x: 252, y: 348 }],
 ];
 
+function EventPill({ label, color }: { label: string; color: string }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <span
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        padding: "10px 20px",
+        border: `1px solid ${color}`,
+        borderRadius: 0,
+        fontSize: "0.72rem",
+        fontWeight: 600,
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        fontFamily: "'DM Sans', sans-serif",
+        background: hovered ? color : "transparent",
+        color: hovered ? "#000000" : "#ffffff",
+        cursor: "default",
+        transition: "all 0.25s ease",
+        display: "inline-block",
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
 function isWebGLAvailable(): boolean {
   try {
     const c = document.createElement("canvas");
@@ -438,7 +465,7 @@ export default function Brain3D() {
     <section
       id="brain-section"
       ref={sectionRef}
-      style={{ background: "var(--deep-black)", position: "relative", minHeight: "400vh" }}
+      style={{ background: "#000000", position: "relative", minHeight: "400vh" }}
     >
       <div
         style={{
@@ -446,48 +473,69 @@ export default function Brain3D() {
           top: 0,
           height: "100vh",
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: "45% 55%",
           alignItems: "center",
-          padding: "0 clamp(24px,6vw,80px)",
-          gap: "clamp(20px,4vw,60px)",
+          padding: "0 clamp(20px,5vw,72px) 0 clamp(20px,4vw,56px)",
+          gap: "clamp(16px,3vw,48px)",
           overflow: "hidden",
         }}
       >
         {/* Left: Brain visual */}
         <div style={{ position: "relative", height: "clamp(320px,56vh,580px)" }}>
           {brainVisual}
-          <div style={{ position: "absolute", bottom: -12, left: 0, right: 0, height: 2, background: "rgba(255,255,255,0.06)", borderRadius: 1 }}>
-            <div style={{ height: "100%", width: `${scrollProgress * 100}%`, background: region.color, borderRadius: 1, transition: "width 0.1s linear, background 0.6s ease" }} />
+          {/* Per-section progress bar (25 / 50 / 75 / 100%) */}
+          <div style={{ position: "absolute", bottom: -14, left: 0, right: 0, height: 2, background: "rgba(255,255,255,0.06)", borderRadius: 1 }}>
+            <div style={{
+              height: "100%",
+              width: `${((activeRegion + 1) / REGIONS.length) * 100}%`,
+              background: region.color,
+              borderRadius: 1,
+              transition: "width 0.6s cubic-bezier(0.25,0.46,0.45,0.94), background 0.6s ease",
+            }} />
           </div>
         </div>
 
         {/* Right: Region info */}
-        <div>
-          <p style={{ fontSize: "0.62rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "var(--gold-accent)", marginBottom: 18, fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ paddingRight: "clamp(0px,2vw,24px)" }}>
+          {/* Label */}
+          <p style={{
+            fontSize: "0.65rem",
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            color: "#a88b5e",
+            marginBottom: 20,
+            fontFamily: "'DM Sans', sans-serif",
+          }}>
             What Is Corpus
           </p>
-          <div style={{ display: "flex", gap: 6, marginBottom: 32, flexWrap: "wrap" }}>
+
+          {/* Dot navigation */}
+          <div style={{ display: "flex", gap: 10, marginBottom: 28, alignItems: "center" }}>
             {REGIONS.map((r, i) => (
               <div
                 key={i}
                 style={{
-                  width: 8, height: 8, borderRadius: "50%",
-                  background: i === activeRegion ? r.color : "rgba(255,255,255,0.12)",
+                  width: i === activeRegion ? 10 : 8,
+                  height: i === activeRegion ? 10 : 8,
+                  borderRadius: "50%",
+                  background: i === activeRegion ? r.color : "transparent",
+                  border: i === activeRegion ? `2px solid ${r.color}` : "2px solid rgba(255,255,255,0.22)",
                   transition: "all 0.5s ease",
-                  transform: i === activeRegion ? "scale(1.5)" : "scale(1)",
-                  boxShadow: i === activeRegion ? `0 0 8px ${r.color}` : "none",
+                  boxShadow: i === activeRegion ? `0 0 10px ${r.color}88` : "none",
                 }}
               />
             ))}
           </div>
+
+          {/* Category headline */}
           <h2
             key={`tag-${activeRegion}`}
             style={{
-              fontSize: "clamp(2rem,4.5vw,3.8rem)",
+              fontSize: "clamp(2.2rem,4.5vw,3.6rem)",
               fontWeight: 700,
               letterSpacing: "-0.03em",
-              color: "white",
-              marginBottom: 24,
+              color: "#ffffff",
+              marginBottom: 28,
               lineHeight: 1.05,
               fontFamily: "'Cormorant Garamond', Georgia, serif",
               fontStyle: "italic",
@@ -496,31 +544,25 @@ export default function Brain3D() {
           >
             {region.tagLine}
           </h2>
+
+          {/* Event pills */}
           <div
             key={`events-${activeRegion}`}
-            style={{ display: "flex", flexWrap: "wrap", gap: 8, animation: "fadeSlideIn 0.5s ease 0.22s both" }}
+            style={{ display: "flex", flexWrap: "wrap", gap: 10, animation: "fadeSlideIn 0.5s ease 0.22s both" }}
           >
             {region.events.map((ev) => (
-              <span
-                key={ev}
-                style={{
-                  padding: "7px 16px",
-                  border: `1px solid ${region.color}66`,
-                  borderRadius: 2,
-                  fontSize: "0.75rem",
-                  fontWeight: 500,
-                  color: "rgba(255,255,255,0.82)",
-                  fontFamily: "'DM Sans', sans-serif",
-                  letterSpacing: "0.06em",
-                  background: `${region.color}18`,
-                  textTransform: "uppercase",
-                }}
-              >
-                {ev}
-              </span>
+              <EventPill key={ev} label={ev} color={region.color} />
             ))}
           </div>
-          <p style={{ marginTop: 36, fontSize: "0.6rem", color: "rgba(255,255,255,0.18)", letterSpacing: "0.15em", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>
+
+          <p style={{
+            marginTop: 40,
+            fontSize: "0.62rem",
+            color: "#4a4a4a",
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            fontFamily: "'DM Sans', sans-serif",
+          }}>
             Scroll to explore regions
           </p>
         </div>
