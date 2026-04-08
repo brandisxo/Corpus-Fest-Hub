@@ -471,14 +471,34 @@
 
 /* ── Mobile responsive ──────────────────────────────────────────── */
 @media (max-width: 768px) {
-  /* Hero — allow content to take full width, statue fades more */
-  #hero > div[style] {
-    max-width: 100% !important;
-    padding-right: clamp(24px,6vw,48px) !important;
+  /* Navbar — hide text links, keep hamburger */
+  .nav-link {
+    display: none;
   }
 
-  /* About corpus — single column */
-  section[style*="1fr 1fr"] {
+  /* Hero title — allow wrapping/scale on small screens */
+  h1 {
+    white-space: normal !important;
+    font-size: clamp(3.2rem, 14vw, 7rem) !important;
+  }
+
+  /* Hero stat bar — slightly smaller gaps */
+  .hero-stats {
+    gap: 8px !important;
+  }
+
+  /* Display text scale */
+  .display-text {
+    font-size: clamp(2rem, 8vw, 3.8rem) !important;
+  }
+
+  /* Events section padding */
+  #events {
+    padding: 72px clamp(18px,5vw,40px) !important;
+  }
+
+  /* Events grid — single column on phones */
+  #events > div:last-child {
     grid-template-columns: 1fr !important;
   }
 
@@ -486,51 +506,40 @@
   .reg-form-row {
     grid-template-columns: 1fr !important;
   }
-}
 
-@media (max-width: 640px) {
-  section {
-    padding-left: 20px !important;
-    padding-right: 20px !important;
+  /* Schedule section padding */
+  #schedule {
+    padding: 72px clamp(18px,5vw,40px) !important;
   }
 
-  .display-text {
-    font-size: clamp(2rem, 9vw, 3.5rem) !important;
+  /* Register section */
+  #register {
+    padding: 72px clamp(18px,5vw,40px) !important;
   }
 
-  /* Brain section — stack the three columns vertically */
-  #brain-section > div > div[style*="maxWidth: 1100"] {
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 20px !important;
-  }
-
-  /* Brain visual takes full width on mobile */
-  #brain-section > div > div[style*="maxWidth: 1100"] > div[style*="54vw"] {
-    max-width: 88vw !important;
-    min-width: 0 !important;
-  }
-
-  /* Registration inputs — always full width on small screens */
-  .reg-input {
-    width: 100% !important;
+  /* Footer if any */
+  footer {
+    padding: 40px clamp(18px,5vw,40px) !important;
   }
 }
 
 @media (max-width: 480px) {
-  /* Ensure CORPUS stays on one line on small phones */
-  h1[style*="Cormorant"] {
-    font-size: clamp(3.2rem, 13vw, 5rem) !important;
-    white-space: nowrap !important;
+  /* Even smaller title on tiny phones */
+  h1 {
+    font-size: clamp(2.8rem, 15vw, 4rem) !important;
   }
 
-  /* Hero content max width full on phones */
-  #hero > div[style*="zIndex: 2"] {
-    max-width: 90% !important;
+  .display-text {
+    font-size: clamp(1.8rem, 9vw, 3rem) !important;
   }
 
   /* Cards carousel adjust */
   .cards-track > div {
-    width: 230px !important;
+    width: 220px !important;
+  }
+
+  /* Reg input full width */
+  .reg-input {
+    font-size: 16px !important; /* prevents iOS zoom on focus */
   }
 }

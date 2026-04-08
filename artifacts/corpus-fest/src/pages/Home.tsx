@@ -213,8 +213,8 @@ function HeroSection() {
           inset: 0,
           width: "100%",
           height: "100%",
-          objectFit: "contain",
-          objectPosition: "right center",
+          objectFit: isMobile ? "cover" : "contain",
+          objectPosition: isMobile ? "60% center" : "right center",
           opacity: loaded ? 0.95 : 0,
           filter: "contrast(1.04) brightness(1.08) saturate(0.82)",
           transition: "opacity 1.8s ease",
@@ -222,36 +222,61 @@ function HeroSection() {
         }}
       />
 
-      {/* Warm left-to-right fade — just enough to keep text legible */}
-      <div style={{
-        position: "absolute",
-        inset: 0,
-        background: "linear-gradient(to right, rgba(35,18,6,0.55) 0%, rgba(35,18,6,0.42) 30%, rgba(35,18,6,0.20) 55%, rgba(35,18,6,0.06) 70%, transparent 82%)",
-        pointerEvents: "none",
-        zIndex: 1,
-      }} />
-
-      {/* Bottom fade */}
-      <div style={{
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: "22%",
-        background: "linear-gradient(to top, #2e1a0a 0%, rgba(40,20,8,0.4) 50%, transparent 100%)",
-        pointerEvents: "none",
-        zIndex: 1,
-      }} />
+      {/* Overlay — mobile: top-heavy dark so title pops; desktop: left-to-right */}
+      {isMobile ? (
+        <>
+          <div style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to bottom, rgba(20,10,3,0.82) 0%, rgba(20,10,3,0.60) 25%, rgba(20,10,3,0.25) 55%, transparent 75%)",
+            pointerEvents: "none",
+            zIndex: 1,
+          }} />
+          <div style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "30%",
+            background: "linear-gradient(to top, #2e1a0a 0%, rgba(40,20,8,0.5) 60%, transparent 100%)",
+            pointerEvents: "none",
+            zIndex: 1,
+          }} />
+        </>
+      ) : (
+        <>
+          <div style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to right, rgba(35,18,6,0.55) 0%, rgba(35,18,6,0.42) 30%, rgba(35,18,6,0.20) 55%, rgba(35,18,6,0.06) 70%, transparent 82%)",
+            pointerEvents: "none",
+            zIndex: 1,
+          }} />
+          <div style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "22%",
+            background: "linear-gradient(to top, #2e1a0a 0%, rgba(40,20,8,0.4) 50%, transparent 100%)",
+            pointerEvents: "none",
+            zIndex: 1,
+          }} />
+        </>
+      )}
 
       {/* Content */}
       <div style={{
         position: "relative",
         zIndex: 2,
         padding: isMobile
-          ? "clamp(90px,14vh,130px) clamp(22px,6vw,40px) clamp(60px,8vh,80px)"
+          ? "clamp(60px,10vh,90px) clamp(22px,6vw,40px) clamp(40px,6vh,60px)"
           : "clamp(80px,12vh,140px) clamp(28px,7vw,88px) clamp(60px,8vh,100px)",
         width: "100%",
-        maxWidth: isMobile ? "92%" : "clamp(52%,58%,66%)",
+        maxWidth: isMobile ? "100%" : "clamp(52%,58%,66%)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: isMobile ? "flex-start" : undefined,
       }}>
 
         {/* Eyebrow */}
@@ -271,18 +296,21 @@ function HeroSection() {
 
         {/* Main title */}
         <h1 style={{
-          fontSize: "clamp(4.4rem, 13.5vw, 14rem)",
+          fontSize: isMobile ? "clamp(3.8rem, 20vw, 6.5rem)" : "clamp(4.4rem, 13.5vw, 14rem)",
           fontWeight: 700,
-          letterSpacing: "-0.04em",
-          lineHeight: 0.88,
+          letterSpacing: isMobile ? "-0.02em" : "-0.04em",
+          lineHeight: 0.9,
           color: "#ffffff",
-          whiteSpace: "nowrap",
+          whiteSpace: isMobile ? "normal" : "nowrap",
           opacity: loaded ? 1 : 0,
           transform: loaded ? "translateX(0)" : "translateX(-48px)",
           transition: "all 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s",
           fontFamily: "'Cormorant Garamond', Georgia, serif",
           fontStyle: "italic",
-          textShadow: "0 2px 8px rgba(212,175,120,0.3)",
+          textShadow: isMobile
+            ? "0 2px 24px rgba(0,0,0,0.95), 0 0 50px rgba(0,0,0,0.8)"
+            : "0 2px 8px rgba(212,175,120,0.3)",
+          marginLeft: isMobile ? "4px" : 0,
         }}>
           Corpus
         </h1>
@@ -395,7 +423,7 @@ function HeroSection() {
         </div>
 
         {/* Stats — inline with separators */}
-        <div style={{
+        <div className="hero-stats" style={{
           marginTop: 48,
           display: "flex",
           alignItems: "center",
